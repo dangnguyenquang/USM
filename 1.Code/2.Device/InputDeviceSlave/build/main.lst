@@ -1,0 +1,2756 @@
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.arch armv6s-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 0
+  12              		.eabi_attribute 18, 4
+  13              		.file	"main.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.MX_GPIO_Init,"ax",%progbits
+  18              		.align	1
+  19              		.syntax unified
+  20              		.code	16
+  21              		.thumb_func
+  23              	MX_GPIO_Init:
+  24              	.LFB318:
+  25              		.file 1 "Src/main.c"
+   1:Src/main.c    **** /* USER CODE BEGIN Header */
+   2:Src/main.c    **** /**
+   3:Src/main.c    ****   ******************************************************************************
+   4:Src/main.c    ****   * @file           : main.c
+   5:Src/main.c    ****   * @brief          : Main program body
+   6:Src/main.c    ****   ******************************************************************************
+   7:Src/main.c    ****   * @attention
+   8:Src/main.c    ****   *
+   9:Src/main.c    ****   * Copyright (c) 2022 STMicroelectronics.
+  10:Src/main.c    ****   * All rights reserved.
+  11:Src/main.c    ****   *
+  12:Src/main.c    ****   * This software is licensed under terms that can be found in the LICENSE file
+  13:Src/main.c    ****   * in the root directory of this software component.
+  14:Src/main.c    ****   * If no LICENSE file comes with this software, it is provided AS-IS.
+  15:Src/main.c    ****   *
+  16:Src/main.c    ****   ******************************************************************************
+  17:Src/main.c    ****   */
+  18:Src/main.c    **** /* USER CODE END Header */
+  19:Src/main.c    **** /* Includes ------------------------------------------------------------------*/
+  20:Src/main.c    **** #include "main.h"
+  21:Src/main.c    **** 
+  22:Src/main.c    **** /* Private includes ----------------------------------------------------------*/
+  23:Src/main.c    **** /* USER CODE BEGIN Includes */
+  24:Src/main.c    **** #include <stdio.h> 
+  25:Src/main.c    **** /* USER CODE END Includes */
+  26:Src/main.c    **** 
+  27:Src/main.c    **** /* Private typedef -----------------------------------------------------------*/
+  28:Src/main.c    **** /* USER CODE BEGIN PTD */
+  29:Src/main.c    **** 
+  30:Src/main.c    **** /* USER CODE END PTD */
+  31:Src/main.c    **** 
+  32:Src/main.c    **** /* Private define ------------------------------------------------------------*/
+  33:Src/main.c    **** /* USER CODE BEGIN PD */
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 2
+
+
+  34:Src/main.c    **** /* USER CODE END PD */
+  35:Src/main.c    **** 
+  36:Src/main.c    **** /* Private macro -------------------------------------------------------------*/
+  37:Src/main.c    **** /* USER CODE BEGIN PM */
+  38:Src/main.c    **** 
+  39:Src/main.c    **** /* USER CODE END PM */
+  40:Src/main.c    **** 
+  41:Src/main.c    **** /* Private variables ---------------------------------------------------------*/
+  42:Src/main.c    **** TIM_HandleTypeDef htim3;
+  43:Src/main.c    **** 
+  44:Src/main.c    **** UART_HandleTypeDef huart1;
+  45:Src/main.c    **** 
+  46:Src/main.c    **** /* USER CODE BEGIN PV */
+  47:Src/main.c    **** uint8_t buffComming = 0; 
+  48:Src/main.c    **** uint8_t rx_data[uartBytes];  
+  49:Src/main.c    **** uint8_t tx_data[uartBytes]; 
+  50:Src/main.c    **** uint8_t rx_dataChar = 0; 
+  51:Src/main.c    **** uint16_t rx_count = 0; 
+  52:Src/main.c    **** 
+  53:Src/main.c    **** uint16_t countingStatusInput1 = 0; 
+  54:Src/main.c    **** uint16_t countingStatusInput2 = 0; 
+  55:Src/main.c    **** uint16_t countingStatusInput3 = 0; 
+  56:Src/main.c    **** 
+  57:Src/main.c    **** uint8_t checkSumCRC[crcBytes]; 
+  58:Src/main.c    **** uint8_t debug = 0; 
+  59:Src/main.c    **** /* USER CODE END PV */
+  60:Src/main.c    **** 
+  61:Src/main.c    **** /* Private function prototypes -----------------------------------------------*/
+  62:Src/main.c    **** void SystemClock_Config(void);
+  63:Src/main.c    **** static void MX_GPIO_Init(void);
+  64:Src/main.c    **** static void MX_USART1_UART_Init(void);
+  65:Src/main.c    **** static void MX_TIM3_Init(void);
+  66:Src/main.c    **** /* USER CODE BEGIN PFP */
+  67:Src/main.c    **** void clearUart(uint8_t *ptrBuffer, uint16_t sizeBuffer); 
+  68:Src/main.c    **** void Calc_CRC16(uint8_t *input, uint16_t size, uint8_t *output); 
+  69:Src/main.c    **** uint8_t CRC_MODBUS(uint8_t *input, uint8_t size); 
+  70:Src/main.c    **** 
+  71:Src/main.c    **** void ModbusTransHandle(void); 
+  72:Src/main.c    **** /* USER CODE END PFP */
+  73:Src/main.c    **** 
+  74:Src/main.c    **** /* Private user code ---------------------------------------------------------*/
+  75:Src/main.c    **** /* USER CODE BEGIN 0 */
+  76:Src/main.c    **** void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) 
+  77:Src/main.c    **** {
+  78:Src/main.c    ****   UNUSED(huart);
+  79:Src/main.c    ****   
+  80:Src/main.c    ****   if(huart->Instance == USART1)
+  81:Src/main.c    ****   {
+  82:Src/main.c    ****     if(buffComming == 0)
+  83:Src/main.c    ****     {
+  84:Src/main.c    ****     	buffComming = 1;
+  85:Src/main.c    ****     	HAL_TIM_Base_Start(&htim3);
+  86:Src/main.c    ****     }
+  87:Src/main.c    **** 
+  88:Src/main.c    ****     HAL_UART_Receive_IT(&huart1, &rx_dataChar, 1);
+  89:Src/main.c    ****     rx_data[rx_count] = rx_dataChar;
+  90:Src/main.c    ****     rx_count++;
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 3
+
+
+  91:Src/main.c    ****     __HAL_TIM_SET_COUNTER(&htim3,0);
+  92:Src/main.c    ****   }
+  93:Src/main.c    **** }
+  94:Src/main.c    **** /* USER CODE END 0 */
+  95:Src/main.c    **** 
+  96:Src/main.c    **** /**
+  97:Src/main.c    ****   * @brief  The application entry point.
+  98:Src/main.c    ****   * @retval int
+  99:Src/main.c    ****   */
+ 100:Src/main.c    **** int main(void)
+ 101:Src/main.c    **** {
+ 102:Src/main.c    ****   /* USER CODE BEGIN 1 */
+ 103:Src/main.c    **** 
+ 104:Src/main.c    ****   /* USER CODE END 1 */
+ 105:Src/main.c    **** 
+ 106:Src/main.c    ****   /* MCU Configuration--------------------------------------------------------*/
+ 107:Src/main.c    **** 
+ 108:Src/main.c    ****   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+ 109:Src/main.c    ****   HAL_Init();
+ 110:Src/main.c    **** 
+ 111:Src/main.c    ****   /* USER CODE BEGIN Init */
+ 112:Src/main.c    **** 
+ 113:Src/main.c    ****   /* USER CODE END Init */
+ 114:Src/main.c    **** 
+ 115:Src/main.c    ****   /* Configure the system clock */
+ 116:Src/main.c    ****   SystemClock_Config();
+ 117:Src/main.c    **** 
+ 118:Src/main.c    ****   /* USER CODE BEGIN SysInit */
+ 119:Src/main.c    **** 
+ 120:Src/main.c    ****   /* USER CODE END SysInit */
+ 121:Src/main.c    **** 
+ 122:Src/main.c    ****   /* Initialize all configured peripherals */
+ 123:Src/main.c    ****   MX_GPIO_Init();
+ 124:Src/main.c    ****   MX_USART1_UART_Init();
+ 125:Src/main.c    ****   MX_TIM3_Init();
+ 126:Src/main.c    ****   /* USER CODE BEGIN 2 */
+ 127:Src/main.c    ****   HAL_TIM_Base_Start(&htim3); 
+ 128:Src/main.c    ****   HAL_UART_Receive_IT(&huart1, &rx_dataChar, 1); 
+ 129:Src/main.c    ****   uint8_t preset_sensor_1 = 0;
+ 130:Src/main.c    ****   uint8_t preset_sensor_2 = 0;
+ 131:Src/main.c    ****   uint8_t preset_sensor_3 = 0; 
+ 132:Src/main.c    ****   /* USER CODE END 2 */
+ 133:Src/main.c    **** 
+ 134:Src/main.c    ****   /* Infinite loop */
+ 135:Src/main.c    ****   /* USER CODE BEGIN WHILE */
+ 136:Src/main.c    ****   while (1)
+ 137:Src/main.c    ****   {
+ 138:Src/main.c    ****     if(HAL_GPIO_ReadPin(Input_Sensor_01_GPIO_Port, Input_Sensor_01_Pin) == GPIO_PIN_RESET)
+ 139:Src/main.c    ****     {
+ 140:Src/main.c    ****       HAL_Delay(delayReduceNoise); 
+ 141:Src/main.c    ****       if(HAL_GPIO_ReadPin(Input_Sensor_01_GPIO_Port, Input_Sensor_01_Pin) == GPIO_PIN_RESET) preset
+ 142:Src/main.c    ****     }
+ 143:Src/main.c    ****     if((HAL_GPIO_ReadPin(Input_Sensor_01_GPIO_Port, Input_Sensor_01_Pin) == GPIO_PIN_SET) && (prese
+ 144:Src/main.c    ****     {
+ 145:Src/main.c    ****       HAL_Delay(delayReduceNoise);
+ 146:Src/main.c    ****       if(HAL_GPIO_ReadPin(Input_Sensor_01_GPIO_Port, Input_Sensor_01_Pin) == GPIO_PIN_SET) 
+ 147:Src/main.c    ****       {
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 4
+
+
+ 148:Src/main.c    ****         preset_sensor_1 = 0;
+ 149:Src/main.c    ****         countingStatusInput1++;  
+ 150:Src/main.c    ****       }
+ 151:Src/main.c    ****     } 
+ 152:Src/main.c    **** 
+ 153:Src/main.c    ****     if(HAL_GPIO_ReadPin(Input_Sensor_02_GPIO_Port, Input_Sensor_02_Pin) == GPIO_PIN_RESET)
+ 154:Src/main.c    ****     {
+ 155:Src/main.c    ****       HAL_Delay(delayReduceNoise); 
+ 156:Src/main.c    ****       if(HAL_GPIO_ReadPin(Input_Sensor_02_GPIO_Port, Input_Sensor_02_Pin) == GPIO_PIN_RESET) preset
+ 157:Src/main.c    ****     }
+ 158:Src/main.c    ****     if((HAL_GPIO_ReadPin(Input_Sensor_02_GPIO_Port, Input_Sensor_02_Pin) == GPIO_PIN_SET) && (prese
+ 159:Src/main.c    ****     {
+ 160:Src/main.c    ****       HAL_Delay(delayReduceNoise);
+ 161:Src/main.c    ****       if(HAL_GPIO_ReadPin(Input_Sensor_02_GPIO_Port, Input_Sensor_02_Pin) == GPIO_PIN_SET) 
+ 162:Src/main.c    ****       {
+ 163:Src/main.c    ****         preset_sensor_2 = 0;
+ 164:Src/main.c    ****         countingStatusInput2++;  
+ 165:Src/main.c    ****       }
+ 166:Src/main.c    ****     }
+ 167:Src/main.c    **** 
+ 168:Src/main.c    ****     if(HAL_GPIO_ReadPin(Input_Sensor_03_GPIO_Port, Input_Sensor_03_Pin) == GPIO_PIN_RESET)
+ 169:Src/main.c    ****     {  
+ 170:Src/main.c    ****       HAL_Delay(delayReduceNoise);
+ 171:Src/main.c    ****       if(HAL_GPIO_ReadPin(Input_Sensor_03_GPIO_Port, Input_Sensor_03_Pin) == GPIO_PIN_RESET) preset
+ 172:Src/main.c    ****     } 
+ 173:Src/main.c    ****     if((HAL_GPIO_ReadPin(Input_Sensor_03_GPIO_Port, Input_Sensor_03_Pin) == GPIO_PIN_SET) && (prese
+ 174:Src/main.c    ****     {
+ 175:Src/main.c    ****       HAL_Delay(delayReduceNoise);
+ 176:Src/main.c    ****       if(HAL_GPIO_ReadPin(Input_Sensor_03_GPIO_Port, Input_Sensor_03_Pin) == GPIO_PIN_SET)
+ 177:Src/main.c    ****       {
+ 178:Src/main.c    ****         preset_sensor_3 = 0; 
+ 179:Src/main.c    ****         countingStatusInput3++; 
+ 180:Src/main.c    ****       }
+ 181:Src/main.c    ****     }
+ 182:Src/main.c    **** 
+ 183:Src/main.c    ****     if(__HAL_TIM_GetCounter(&htim3) > 5)
+ 184:Src/main.c    ****     {
+ 185:Src/main.c    ****       __HAL_TIM_SET_COUNTER(&htim3,0);
+ 186:Src/main.c    ****       HAL_TIM_Base_Stop(&htim3);
+ 187:Src/main.c    ****       buffComming = 0; 
+ 188:Src/main.c    ****       if(CRC_MODBUS(rx_data, rx_count) && rx_data[0]==0x02) ModbusTransHandle(); 
+ 189:Src/main.c    ****       clearUart(rx_data, uartBytes); 
+ 190:Src/main.c    ****     }
+ 191:Src/main.c    ****     /* USER CODE END WHILE */
+ 192:Src/main.c    **** 
+ 193:Src/main.c    ****     /* USER CODE BEGIN 3 */
+ 194:Src/main.c    ****   }
+ 195:Src/main.c    ****   /* USER CODE END 3 */
+ 196:Src/main.c    **** }
+ 197:Src/main.c    **** 
+ 198:Src/main.c    **** /**
+ 199:Src/main.c    ****   * @brief System Clock Configuration
+ 200:Src/main.c    ****   * @retval None
+ 201:Src/main.c    ****   */
+ 202:Src/main.c    **** void SystemClock_Config(void)
+ 203:Src/main.c    **** {
+ 204:Src/main.c    ****   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 5
+
+
+ 205:Src/main.c    ****   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+ 206:Src/main.c    **** 
+ 207:Src/main.c    ****   /** Configure the main internal regulator output voltage
+ 208:Src/main.c    ****   */
+ 209:Src/main.c    ****   HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1);
+ 210:Src/main.c    **** 
+ 211:Src/main.c    ****   /** Initializes the RCC Oscillators according to the specified parameters
+ 212:Src/main.c    ****   * in the RCC_OscInitTypeDef structure.
+ 213:Src/main.c    ****   */
+ 214:Src/main.c    ****   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+ 215:Src/main.c    ****   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+ 216:Src/main.c    ****   RCC_OscInitStruct.HSIDiv = RCC_HSI_DIV1;
+ 217:Src/main.c    ****   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+ 218:Src/main.c    ****   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+ 219:Src/main.c    ****   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+ 220:Src/main.c    ****   {
+ 221:Src/main.c    ****     Error_Handler();
+ 222:Src/main.c    ****   }
+ 223:Src/main.c    **** 
+ 224:Src/main.c    ****   /** Initializes the CPU, AHB and APB buses clocks
+ 225:Src/main.c    ****   */
+ 226:Src/main.c    ****   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+ 227:Src/main.c    ****                               |RCC_CLOCKTYPE_PCLK1;
+ 228:Src/main.c    ****   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
+ 229:Src/main.c    ****   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+ 230:Src/main.c    ****   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+ 231:Src/main.c    **** 
+ 232:Src/main.c    ****   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
+ 233:Src/main.c    ****   {
+ 234:Src/main.c    ****     Error_Handler();
+ 235:Src/main.c    ****   }
+ 236:Src/main.c    **** }
+ 237:Src/main.c    **** 
+ 238:Src/main.c    **** /**
+ 239:Src/main.c    ****   * @brief TIM3 Initialization Function
+ 240:Src/main.c    ****   * @param None
+ 241:Src/main.c    ****   * @retval None
+ 242:Src/main.c    ****   */
+ 243:Src/main.c    **** static void MX_TIM3_Init(void)
+ 244:Src/main.c    **** {
+ 245:Src/main.c    **** 
+ 246:Src/main.c    ****   /* USER CODE BEGIN TIM3_Init 0 */
+ 247:Src/main.c    **** 
+ 248:Src/main.c    ****   /* USER CODE END TIM3_Init 0 */
+ 249:Src/main.c    **** 
+ 250:Src/main.c    ****   TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+ 251:Src/main.c    ****   TIM_MasterConfigTypeDef sMasterConfig = {0};
+ 252:Src/main.c    **** 
+ 253:Src/main.c    ****   /* USER CODE BEGIN TIM3_Init 1 */
+ 254:Src/main.c    **** 
+ 255:Src/main.c    ****   /* USER CODE END TIM3_Init 1 */
+ 256:Src/main.c    ****   htim3.Instance = TIM3;
+ 257:Src/main.c    ****   htim3.Init.Prescaler = 16000;
+ 258:Src/main.c    ****   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
+ 259:Src/main.c    ****   htim3.Init.Period = 65535;
+ 260:Src/main.c    ****   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+ 261:Src/main.c    ****   htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 6
+
+
+ 262:Src/main.c    ****   if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
+ 263:Src/main.c    ****   {
+ 264:Src/main.c    ****     Error_Handler();
+ 265:Src/main.c    ****   }
+ 266:Src/main.c    ****   sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+ 267:Src/main.c    ****   if (HAL_TIM_ConfigClockSource(&htim3, &sClockSourceConfig) != HAL_OK)
+ 268:Src/main.c    ****   {
+ 269:Src/main.c    ****     Error_Handler();
+ 270:Src/main.c    ****   }
+ 271:Src/main.c    ****   sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+ 272:Src/main.c    ****   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+ 273:Src/main.c    ****   if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
+ 274:Src/main.c    ****   {
+ 275:Src/main.c    ****     Error_Handler();
+ 276:Src/main.c    ****   }
+ 277:Src/main.c    ****   /* USER CODE BEGIN TIM3_Init 2 */
+ 278:Src/main.c    **** 
+ 279:Src/main.c    ****   /* USER CODE END TIM3_Init 2 */
+ 280:Src/main.c    **** 
+ 281:Src/main.c    **** }
+ 282:Src/main.c    **** 
+ 283:Src/main.c    **** /**
+ 284:Src/main.c    ****   * @brief USART1 Initialization Function
+ 285:Src/main.c    ****   * @param None
+ 286:Src/main.c    ****   * @retval None
+ 287:Src/main.c    ****   */
+ 288:Src/main.c    **** static void MX_USART1_UART_Init(void)
+ 289:Src/main.c    **** {
+ 290:Src/main.c    **** 
+ 291:Src/main.c    ****   /* USER CODE BEGIN USART1_Init 0 */
+ 292:Src/main.c    **** 
+ 293:Src/main.c    ****   /* USER CODE END USART1_Init 0 */
+ 294:Src/main.c    **** 
+ 295:Src/main.c    ****   /* USER CODE BEGIN USART1_Init 1 */
+ 296:Src/main.c    **** 
+ 297:Src/main.c    ****   /* USER CODE END USART1_Init 1 */
+ 298:Src/main.c    ****   huart1.Instance = USART1;
+ 299:Src/main.c    ****   huart1.Init.BaudRate = 115200;
+ 300:Src/main.c    ****   huart1.Init.WordLength = UART_WORDLENGTH_8B;
+ 301:Src/main.c    ****   huart1.Init.StopBits = UART_STOPBITS_1;
+ 302:Src/main.c    ****   huart1.Init.Parity = UART_PARITY_NONE;
+ 303:Src/main.c    ****   huart1.Init.Mode = UART_MODE_TX_RX;
+ 304:Src/main.c    ****   huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+ 305:Src/main.c    ****   huart1.Init.OverSampling = UART_OVERSAMPLING_16;
+ 306:Src/main.c    ****   huart1.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+ 307:Src/main.c    ****   huart1.Init.ClockPrescaler = UART_PRESCALER_DIV1;
+ 308:Src/main.c    ****   huart1.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+ 309:Src/main.c    ****   if (HAL_UART_Init(&huart1) != HAL_OK)
+ 310:Src/main.c    ****   {
+ 311:Src/main.c    ****     Error_Handler();
+ 312:Src/main.c    ****   }
+ 313:Src/main.c    ****   if (HAL_UARTEx_SetTxFifoThreshold(&huart1, UART_TXFIFO_THRESHOLD_1_8) != HAL_OK)
+ 314:Src/main.c    ****   {
+ 315:Src/main.c    ****     Error_Handler();
+ 316:Src/main.c    ****   }
+ 317:Src/main.c    ****   if (HAL_UARTEx_SetRxFifoThreshold(&huart1, UART_RXFIFO_THRESHOLD_1_8) != HAL_OK)
+ 318:Src/main.c    ****   {
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 7
+
+
+ 319:Src/main.c    ****     Error_Handler();
+ 320:Src/main.c    ****   }
+ 321:Src/main.c    ****   if (HAL_UARTEx_DisableFifoMode(&huart1) != HAL_OK)
+ 322:Src/main.c    ****   {
+ 323:Src/main.c    ****     Error_Handler();
+ 324:Src/main.c    ****   }
+ 325:Src/main.c    ****   /* USER CODE BEGIN USART1_Init 2 */
+ 326:Src/main.c    **** 
+ 327:Src/main.c    ****   /* USER CODE END USART1_Init 2 */
+ 328:Src/main.c    **** 
+ 329:Src/main.c    **** }
+ 330:Src/main.c    **** 
+ 331:Src/main.c    **** /**
+ 332:Src/main.c    ****   * @brief GPIO Initialization Function
+ 333:Src/main.c    ****   * @param None
+ 334:Src/main.c    ****   * @retval None
+ 335:Src/main.c    ****   */
+ 336:Src/main.c    **** static void MX_GPIO_Init(void)
+ 337:Src/main.c    **** {
+  26              		.loc 1 337 1 view -0
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 32
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+  30 0000 10B5     		push	{r4, lr}
+  31              	.LCFI0:
+  32              		.cfi_def_cfa_offset 8
+  33              		.cfi_offset 4, -8
+  34              		.cfi_offset 14, -4
+  35 0002 88B0     		sub	sp, sp, #32
+  36              	.LCFI1:
+  37              		.cfi_def_cfa_offset 40
+ 338:Src/main.c    ****   GPIO_InitTypeDef GPIO_InitStruct = {0};
+  38              		.loc 1 338 3 view .LVU1
+  39              		.loc 1 338 20 is_stmt 0 view .LVU2
+  40 0004 1422     		movs	r2, #20
+  41 0006 0021     		movs	r1, #0
+  42 0008 03A8     		add	r0, sp, #12
+  43 000a FFF7FEFF 		bl	memset
+  44              	.LVL0:
+ 339:Src/main.c    **** 
+ 340:Src/main.c    ****   /* GPIO Ports Clock Enable */
+ 341:Src/main.c    ****   __HAL_RCC_GPIOB_CLK_ENABLE();
+  45              		.loc 1 341 3 is_stmt 1 view .LVU3
+  46              	.LBB4:
+  47              		.loc 1 341 3 view .LVU4
+  48              		.loc 1 341 3 view .LVU5
+  49 000e 134B     		ldr	r3, .L2
+  50 0010 596B     		ldr	r1, [r3, #52]
+  51 0012 0222     		movs	r2, #2
+  52 0014 1143     		orrs	r1, r2
+  53 0016 5963     		str	r1, [r3, #52]
+  54              		.loc 1 341 3 view .LVU6
+  55 0018 596B     		ldr	r1, [r3, #52]
+  56 001a 0A40     		ands	r2, r1
+  57 001c 0192     		str	r2, [sp, #4]
+  58              		.loc 1 341 3 view .LVU7
+  59 001e 019A     		ldr	r2, [sp, #4]
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 8
+
+
+  60              	.LBE4:
+  61              		.loc 1 341 3 view .LVU8
+ 342:Src/main.c    ****   __HAL_RCC_GPIOA_CLK_ENABLE();
+  62              		.loc 1 342 3 view .LVU9
+  63              	.LBB5:
+  64              		.loc 1 342 3 view .LVU10
+  65              		.loc 1 342 3 view .LVU11
+  66 0020 5A6B     		ldr	r2, [r3, #52]
+  67 0022 0124     		movs	r4, #1
+  68 0024 2243     		orrs	r2, r4
+  69 0026 5A63     		str	r2, [r3, #52]
+  70              		.loc 1 342 3 view .LVU12
+  71 0028 5B6B     		ldr	r3, [r3, #52]
+  72 002a 2340     		ands	r3, r4
+  73 002c 0293     		str	r3, [sp, #8]
+  74              		.loc 1 342 3 view .LVU13
+  75 002e 029B     		ldr	r3, [sp, #8]
+  76              	.LBE5:
+  77              		.loc 1 342 3 view .LVU14
+ 343:Src/main.c    **** 
+ 344:Src/main.c    ****   /*Configure GPIO pins : Input_Sensor_03_Pin Input_Sensor_02_Pin */
+ 345:Src/main.c    ****   GPIO_InitStruct.Pin = Input_Sensor_03_Pin|Input_Sensor_02_Pin;
+  78              		.loc 1 345 3 view .LVU15
+  79              		.loc 1 345 23 is_stmt 0 view .LVU16
+  80 0030 C023     		movs	r3, #192
+  81 0032 1B02     		lsls	r3, r3, #8
+  82 0034 0393     		str	r3, [sp, #12]
+ 346:Src/main.c    ****   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  83              		.loc 1 346 3 is_stmt 1 view .LVU17
+ 347:Src/main.c    ****   GPIO_InitStruct.Pull = GPIO_PULLUP;
+  84              		.loc 1 347 3 view .LVU18
+  85              		.loc 1 347 24 is_stmt 0 view .LVU19
+  86 0036 0594     		str	r4, [sp, #20]
+ 348:Src/main.c    ****   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  87              		.loc 1 348 3 is_stmt 1 view .LVU20
+  88 0038 03A9     		add	r1, sp, #12
+  89 003a 0948     		ldr	r0, .L2+4
+  90 003c FFF7FEFF 		bl	HAL_GPIO_Init
+  91              	.LVL1:
+ 349:Src/main.c    **** 
+ 350:Src/main.c    ****   /*Configure GPIO pin : Input_Sensor_01_Pin */
+ 351:Src/main.c    ****   GPIO_InitStruct.Pin = Input_Sensor_01_Pin;
+  92              		.loc 1 351 3 view .LVU21
+  93              		.loc 1 351 23 is_stmt 0 view .LVU22
+  94 0040 8023     		movs	r3, #128
+  95 0042 5B00     		lsls	r3, r3, #1
+  96 0044 0393     		str	r3, [sp, #12]
+ 352:Src/main.c    ****   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  97              		.loc 1 352 3 is_stmt 1 view .LVU23
+  98              		.loc 1 352 24 is_stmt 0 view .LVU24
+  99 0046 0023     		movs	r3, #0
+ 100 0048 0493     		str	r3, [sp, #16]
+ 353:Src/main.c    ****   GPIO_InitStruct.Pull = GPIO_PULLUP;
+ 101              		.loc 1 353 3 is_stmt 1 view .LVU25
+ 102              		.loc 1 353 24 is_stmt 0 view .LVU26
+ 103 004a 0594     		str	r4, [sp, #20]
+ 354:Src/main.c    ****   HAL_GPIO_Init(Input_Sensor_01_GPIO_Port, &GPIO_InitStruct);
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 9
+
+
+ 104              		.loc 1 354 3 is_stmt 1 view .LVU27
+ 105 004c A020     		movs	r0, #160
+ 106 004e 03A9     		add	r1, sp, #12
+ 107 0050 C005     		lsls	r0, r0, #23
+ 108 0052 FFF7FEFF 		bl	HAL_GPIO_Init
+ 109              	.LVL2:
+ 355:Src/main.c    **** 
+ 356:Src/main.c    **** }
+ 110              		.loc 1 356 1 is_stmt 0 view .LVU28
+ 111 0056 08B0     		add	sp, sp, #32
+ 112              		@ sp needed
+ 113 0058 10BD     		pop	{r4, pc}
+ 114              	.L3:
+ 115 005a C046     		.align	2
+ 116              	.L2:
+ 117 005c 00100240 		.word	1073876992
+ 118 0060 00040050 		.word	1342178304
+ 119              		.cfi_endproc
+ 120              	.LFE318:
+ 122              		.section	.text.HAL_UART_RxCpltCallback,"ax",%progbits
+ 123              		.align	1
+ 124              		.global	HAL_UART_RxCpltCallback
+ 125              		.syntax unified
+ 126              		.code	16
+ 127              		.thumb_func
+ 129              	HAL_UART_RxCpltCallback:
+ 130              	.LVL3:
+ 131              	.LFB313:
+  77:Src/main.c    ****   UNUSED(huart);
+ 132              		.loc 1 77 1 is_stmt 1 view -0
+ 133              		.cfi_startproc
+ 134              		@ args = 0, pretend = 0, frame = 0
+ 135              		@ frame_needed = 0, uses_anonymous_args = 0
+  77:Src/main.c    ****   UNUSED(huart);
+ 136              		.loc 1 77 1 is_stmt 0 view .LVU30
+ 137 0000 10B5     		push	{r4, lr}
+ 138              	.LCFI2:
+ 139              		.cfi_def_cfa_offset 8
+ 140              		.cfi_offset 4, -8
+ 141              		.cfi_offset 14, -4
+  78:Src/main.c    ****   
+ 142              		.loc 1 78 3 is_stmt 1 view .LVU31
+  80:Src/main.c    ****   {
+ 143              		.loc 1 80 3 view .LVU32
+  80:Src/main.c    ****   {
+ 144              		.loc 1 80 11 is_stmt 0 view .LVU33
+ 145 0002 0268     		ldr	r2, [r0]
+  80:Src/main.c    ****   {
+ 146              		.loc 1 80 5 view .LVU34
+ 147 0004 104B     		ldr	r3, .L9
+ 148 0006 9A42     		cmp	r2, r3
+ 149 0008 00D0     		beq	.L7
+ 150              	.LVL4:
+ 151              	.L4:
+  93:Src/main.c    **** /* USER CODE END 0 */
+ 152              		.loc 1 93 1 view .LVU35
+ 153              		@ sp needed
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 10
+
+
+ 154 000a 10BD     		pop	{r4, pc}
+ 155              	.LVL5:
+ 156              	.L7:
+  82:Src/main.c    ****     {
+ 157              		.loc 1 82 5 is_stmt 1 view .LVU36
+  82:Src/main.c    ****     {
+ 158              		.loc 1 82 20 is_stmt 0 view .LVU37
+ 159 000c 0F4B     		ldr	r3, .L9+4
+ 160 000e 1B78     		ldrb	r3, [r3]
+  82:Src/main.c    ****     {
+ 161              		.loc 1 82 7 view .LVU38
+ 162 0010 002B     		cmp	r3, #0
+ 163 0012 11D0     		beq	.L8
+ 164              	.LVL6:
+ 165              	.L6:
+  88:Src/main.c    ****     rx_data[rx_count] = rx_dataChar;
+ 166              		.loc 1 88 5 is_stmt 1 view .LVU39
+ 167 0014 0E4C     		ldr	r4, .L9+8
+ 168 0016 0122     		movs	r2, #1
+ 169 0018 2100     		movs	r1, r4
+ 170 001a 0E48     		ldr	r0, .L9+12
+ 171 001c FFF7FEFF 		bl	HAL_UART_Receive_IT
+ 172              	.LVL7:
+  89:Src/main.c    ****     rx_count++;
+ 173              		.loc 1 89 5 view .LVU40
+  89:Src/main.c    ****     rx_count++;
+ 174              		.loc 1 89 12 is_stmt 0 view .LVU41
+ 175 0020 0D4A     		ldr	r2, .L9+16
+ 176 0022 1388     		ldrh	r3, [r2]
+  89:Src/main.c    ****     rx_count++;
+ 177              		.loc 1 89 23 view .LVU42
+ 178 0024 2078     		ldrb	r0, [r4]
+ 179 0026 0D49     		ldr	r1, .L9+20
+ 180 0028 C854     		strb	r0, [r1, r3]
+  90:Src/main.c    ****     __HAL_TIM_SET_COUNTER(&htim3,0);
+ 181              		.loc 1 90 5 is_stmt 1 view .LVU43
+  90:Src/main.c    ****     __HAL_TIM_SET_COUNTER(&htim3,0);
+ 182              		.loc 1 90 13 is_stmt 0 view .LVU44
+ 183 002a 0133     		adds	r3, r3, #1
+ 184 002c 1380     		strh	r3, [r2]
+  91:Src/main.c    ****   }
+ 185              		.loc 1 91 5 is_stmt 1 view .LVU45
+ 186 002e 0C4B     		ldr	r3, .L9+24
+ 187 0030 1B68     		ldr	r3, [r3]
+ 188 0032 0022     		movs	r2, #0
+ 189 0034 5A62     		str	r2, [r3, #36]
+  93:Src/main.c    **** /* USER CODE END 0 */
+ 190              		.loc 1 93 1 is_stmt 0 view .LVU46
+ 191 0036 E8E7     		b	.L4
+ 192              	.LVL8:
+ 193              	.L8:
+  84:Src/main.c    ****     	HAL_TIM_Base_Start(&htim3);
+ 194              		.loc 1 84 6 is_stmt 1 view .LVU47
+  84:Src/main.c    ****     	HAL_TIM_Base_Start(&htim3);
+ 195              		.loc 1 84 18 is_stmt 0 view .LVU48
+ 196 0038 044B     		ldr	r3, .L9+4
+ 197 003a 0122     		movs	r2, #1
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 11
+
+
+ 198 003c 1A70     		strb	r2, [r3]
+  85:Src/main.c    ****     }
+ 199              		.loc 1 85 6 is_stmt 1 view .LVU49
+ 200 003e 0848     		ldr	r0, .L9+24
+ 201              	.LVL9:
+  85:Src/main.c    ****     }
+ 202              		.loc 1 85 6 is_stmt 0 view .LVU50
+ 203 0040 FFF7FEFF 		bl	HAL_TIM_Base_Start
+ 204              	.LVL10:
+ 205 0044 E6E7     		b	.L6
+ 206              	.L10:
+ 207 0046 C046     		.align	2
+ 208              	.L9:
+ 209 0048 00380140 		.word	1073821696
+ 210 004c 00000000 		.word	.LANCHOR0
+ 211 0050 00000000 		.word	.LANCHOR2
+ 212 0054 00000000 		.word	huart1
+ 213 0058 00000000 		.word	.LANCHOR3
+ 214 005c 00000000 		.word	.LANCHOR4
+ 215 0060 00000000 		.word	.LANCHOR1
+ 216              		.cfi_endproc
+ 217              	.LFE313:
+ 219              		.section	.text.clearUart,"ax",%progbits
+ 220              		.align	1
+ 221              		.global	clearUart
+ 222              		.syntax unified
+ 223              		.code	16
+ 224              		.thumb_func
+ 226              	clearUart:
+ 227              	.LVL11:
+ 228              	.LFB319:
+ 357:Src/main.c    **** 
+ 358:Src/main.c    **** /* USER CODE BEGIN 4 */
+ 359:Src/main.c    **** void clearUart(uint8_t *ptrBuffer, uint16_t sizeBuffer)
+ 360:Src/main.c    **** {
+ 229              		.loc 1 360 1 is_stmt 1 view -0
+ 230              		.cfi_startproc
+ 231              		@ args = 0, pretend = 0, frame = 0
+ 232              		@ frame_needed = 0, uses_anonymous_args = 0
+ 233              		.loc 1 360 1 is_stmt 0 view .LVU52
+ 234 0000 10B5     		push	{r4, lr}
+ 235              	.LCFI3:
+ 236              		.cfi_def_cfa_offset 8
+ 237              		.cfi_offset 4, -8
+ 238              		.cfi_offset 14, -4
+ 361:Src/main.c    ****   if(ptrBuffer == &rx_data[0]) rx_count = 0; 
+ 239              		.loc 1 361 3 is_stmt 1 view .LVU53
+ 240              		.loc 1 361 5 is_stmt 0 view .LVU54
+ 241 0002 084B     		ldr	r3, .L16
+ 242 0004 9842     		cmp	r0, r3
+ 243 0006 01D0     		beq	.L15
+ 244              	.L12:
+ 360:Src/main.c    ****   if(ptrBuffer == &rx_data[0]) rx_count = 0; 
+ 245              		.loc 1 360 1 discriminator 1 view .LVU55
+ 246 0008 0023     		movs	r3, #0
+ 247 000a 08E0     		b	.L13
+ 248              	.L15:
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 12
+
+
+ 249              		.loc 1 361 32 is_stmt 1 discriminator 1 view .LVU56
+ 250              		.loc 1 361 41 is_stmt 0 discriminator 1 view .LVU57
+ 251 000c 064B     		ldr	r3, .L16+4
+ 252 000e 0022     		movs	r2, #0
+ 253 0010 1A80     		strh	r2, [r3]
+ 254 0012 F9E7     		b	.L12
+ 255              	.LVL12:
+ 256              	.L14:
+ 257              	.LBB6:
+ 362:Src/main.c    **** 
+ 363:Src/main.c    **** 	for(uint16_t i = 0; i < sizeBuffer; i++) ptrBuffer[i] = '\0'; 
+ 258              		.loc 1 363 43 is_stmt 1 discriminator 3 view .LVU58
+ 259              		.loc 1 363 52 is_stmt 0 discriminator 3 view .LVU59
+ 260 0014 C218     		adds	r2, r0, r3
+ 261              		.loc 1 363 56 discriminator 3 view .LVU60
+ 262 0016 0024     		movs	r4, #0
+ 263 0018 1470     		strb	r4, [r2]
+ 264              		.loc 1 363 38 is_stmt 1 discriminator 3 view .LVU61
+ 265              		.loc 1 363 39 is_stmt 0 discriminator 3 view .LVU62
+ 266 001a 0133     		adds	r3, r3, #1
+ 267              	.LVL13:
+ 268              		.loc 1 363 39 discriminator 3 view .LVU63
+ 269 001c 9BB2     		uxth	r3, r3
+ 270              	.LVL14:
+ 271              	.L13:
+ 272              		.loc 1 363 22 is_stmt 1 discriminator 1 view .LVU64
+ 273              		.loc 1 363 2 is_stmt 0 discriminator 1 view .LVU65
+ 274 001e 8B42     		cmp	r3, r1
+ 275 0020 F8D3     		bcc	.L14
+ 276              	.LBE6:
+ 364:Src/main.c    **** }
+ 277              		.loc 1 364 1 view .LVU66
+ 278              		@ sp needed
+ 279 0022 10BD     		pop	{r4, pc}
+ 280              	.L17:
+ 281              		.align	2
+ 282              	.L16:
+ 283 0024 00000000 		.word	.LANCHOR4
+ 284 0028 00000000 		.word	.LANCHOR3
+ 285              		.cfi_endproc
+ 286              	.LFE319:
+ 288              		.section	.text.appendString,"ax",%progbits
+ 289              		.align	1
+ 290              		.global	appendString
+ 291              		.syntax unified
+ 292              		.code	16
+ 293              		.thumb_func
+ 295              	appendString:
+ 296              	.LVL15:
+ 297              	.LFB320:
+ 365:Src/main.c    **** 
+ 366:Src/main.c    **** void appendString(uint8_t* buff_1_name, uint16_t *buff_1_len, uint8_t* buff_2_name, uint16_t buff_2
+ 367:Src/main.c    **** { 
+ 298              		.loc 1 367 1 is_stmt 1 view -0
+ 299              		.cfi_startproc
+ 300              		@ args = 0, pretend = 0, frame = 0
+ 301              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 13
+
+
+ 302              		.loc 1 367 1 is_stmt 0 view .LVU68
+ 303 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 304              	.LCFI4:
+ 305              		.cfi_def_cfa_offset 20
+ 306              		.cfi_offset 4, -20
+ 307              		.cfi_offset 5, -16
+ 308              		.cfi_offset 6, -12
+ 309              		.cfi_offset 7, -8
+ 310              		.cfi_offset 14, -4
+ 368:Src/main.c    **** 	uint16_t x = 0;
+ 311              		.loc 1 368 2 is_stmt 1 view .LVU69
+ 312              	.LVL16:
+ 369:Src/main.c    ****   for (uint16_t length = *buff_1_len; length < *buff_1_len + buff_2_len; length++) 
+ 313              		.loc 1 369 3 view .LVU70
+ 314              	.LBB7:
+ 315              		.loc 1 369 8 view .LVU71
+ 316              		.loc 1 369 17 is_stmt 0 view .LVU72
+ 317 0002 0C88     		ldrh	r4, [r1]
+ 318              	.LVL17:
+ 319              		.loc 1 369 17 view .LVU73
+ 320              	.LBE7:
+ 368:Src/main.c    **** 	uint16_t x = 0;
+ 321              		.loc 1 368 11 view .LVU74
+ 322 0004 0025     		movs	r5, #0
+ 323              	.LBB8:
+ 324              		.loc 1 369 3 view .LVU75
+ 325 0006 05E0     		b	.L19
+ 326              	.LVL18:
+ 327              	.L20:
+ 370:Src/main.c    ****   {
+ 371:Src/main.c    ****     buff_1_name[length] = buff_2_name[x];
+ 328              		.loc 1 371 5 is_stmt 1 discriminator 3 view .LVU76
+ 329              		.loc 1 371 38 is_stmt 0 discriminator 3 view .LVU77
+ 330 0008 575D     		ldrb	r7, [r2, r5]
+ 331              		.loc 1 371 25 discriminator 3 view .LVU78
+ 332 000a 0755     		strb	r7, [r0, r4]
+ 372:Src/main.c    ****     x++;
+ 333              		.loc 1 372 5 is_stmt 1 discriminator 3 view .LVU79
+ 334              		.loc 1 372 6 is_stmt 0 discriminator 3 view .LVU80
+ 335 000c 0135     		adds	r5, r5, #1
+ 336              	.LVL19:
+ 337              		.loc 1 372 6 discriminator 3 view .LVU81
+ 338 000e ADB2     		uxth	r5, r5
+ 339              	.LVL20:
+ 369:Src/main.c    ****   for (uint16_t length = *buff_1_len; length < *buff_1_len + buff_2_len; length++) 
+ 340              		.loc 1 369 74 is_stmt 1 discriminator 3 view .LVU82
+ 369:Src/main.c    ****   for (uint16_t length = *buff_1_len; length < *buff_1_len + buff_2_len; length++) 
+ 341              		.loc 1 369 80 is_stmt 0 discriminator 3 view .LVU83
+ 342 0010 0134     		adds	r4, r4, #1
+ 343              	.LVL21:
+ 369:Src/main.c    ****   for (uint16_t length = *buff_1_len; length < *buff_1_len + buff_2_len; length++) 
+ 344              		.loc 1 369 80 discriminator 3 view .LVU84
+ 345 0012 A4B2     		uxth	r4, r4
+ 346              	.LVL22:
+ 347              	.L19:
+ 369:Src/main.c    ****   for (uint16_t length = *buff_1_len; length < *buff_1_len + buff_2_len; length++) 
+ 348              		.loc 1 369 39 is_stmt 1 discriminator 1 view .LVU85
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 14
+
+
+ 369:Src/main.c    ****   for (uint16_t length = *buff_1_len; length < *buff_1_len + buff_2_len; length++) 
+ 349              		.loc 1 369 48 is_stmt 0 discriminator 1 view .LVU86
+ 350 0014 0E88     		ldrh	r6, [r1]
+ 369:Src/main.c    ****   for (uint16_t length = *buff_1_len; length < *buff_1_len + buff_2_len; length++) 
+ 351              		.loc 1 369 60 discriminator 1 view .LVU87
+ 352 0016 9F19     		adds	r7, r3, r6
+ 369:Src/main.c    ****   for (uint16_t length = *buff_1_len; length < *buff_1_len + buff_2_len; length++) 
+ 353              		.loc 1 369 3 discriminator 1 view .LVU88
+ 354 0018 BC42     		cmp	r4, r7
+ 355 001a F5DB     		blt	.L20
+ 369:Src/main.c    ****   for (uint16_t length = *buff_1_len; length < *buff_1_len + buff_2_len; length++) 
+ 356              		.loc 1 369 3 discriminator 1 view .LVU89
+ 357              	.LBE8:
+ 373:Src/main.c    ****   }
+ 374:Src/main.c    ****   *buff_1_len = *buff_1_len + buff_2_len;
+ 358              		.loc 1 374 3 is_stmt 1 view .LVU90
+ 359              		.loc 1 374 15 is_stmt 0 view .LVU91
+ 360 001c 0F80     		strh	r7, [r1]
+ 375:Src/main.c    **** } 
+ 361              		.loc 1 375 1 view .LVU92
+ 362              		@ sp needed
+ 363              	.LVL23:
+ 364              	.LVL24:
+ 365              		.loc 1 375 1 view .LVU93
+ 366 001e F0BD     		pop	{r4, r5, r6, r7, pc}
+ 367              		.cfi_endproc
+ 368              	.LFE320:
+ 370              		.section	.text.Calc_CRC16,"ax",%progbits
+ 371              		.align	1
+ 372              		.global	Calc_CRC16
+ 373              		.syntax unified
+ 374              		.code	16
+ 375              		.thumb_func
+ 377              	Calc_CRC16:
+ 378              	.LVL25:
+ 379              	.LFB321:
+ 376:Src/main.c    **** 
+ 377:Src/main.c    **** void Calc_CRC16(uint8_t *input, uint16_t size, uint8_t *output)
+ 378:Src/main.c    **** {
+ 380              		.loc 1 378 1 is_stmt 1 view -0
+ 381              		.cfi_startproc
+ 382              		@ args = 0, pretend = 0, frame = 0
+ 383              		@ frame_needed = 0, uses_anonymous_args = 0
+ 384              		.loc 1 378 1 is_stmt 0 view .LVU95
+ 385 0000 70B5     		push	{r4, r5, r6, lr}
+ 386              	.LCFI5:
+ 387              		.cfi_def_cfa_offset 16
+ 388              		.cfi_offset 4, -16
+ 389              		.cfi_offset 5, -12
+ 390              		.cfi_offset 6, -8
+ 391              		.cfi_offset 14, -4
+ 392 0002 0500     		movs	r5, r0
+ 393 0004 0C00     		movs	r4, r1
+ 394 0006 1600     		movs	r6, r2
+ 379:Src/main.c    ****   uint16_t reg_crc = 0xFFFF; 
+ 395              		.loc 1 379 3 is_stmt 1 view .LVU96
+ 396              	.LVL26:
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 15
+
+
+ 380:Src/main.c    ****     
+ 381:Src/main.c    ****   for(uint16_t i = 0; i < size; i++)
+ 397              		.loc 1 381 3 view .LVU97
+ 398              	.LBB9:
+ 399              		.loc 1 381 7 view .LVU98
+ 400              		.loc 1 381 16 is_stmt 0 view .LVU99
+ 401 0008 0020     		movs	r0, #0
+ 402              	.LVL27:
+ 403              		.loc 1 381 16 view .LVU100
+ 404              	.LBE9:
+ 379:Src/main.c    ****   uint16_t reg_crc = 0xFFFF; 
+ 405              		.loc 1 379 12 view .LVU101
+ 406 000a 0D4A     		ldr	r2, .L30
+ 407              	.LVL28:
+ 408              	.LBB12:
+ 409              		.loc 1 381 3 view .LVU102
+ 410 000c 0DE0     		b	.L22
+ 411              	.LVL29:
+ 412              	.L24:
+ 413              	.LBB10:
+ 382:Src/main.c    ****   {
+ 383:Src/main.c    ****     reg_crc ^= input[i];
+ 384:Src/main.c    ****     for(uint8_t j = 0; j < 8; j++)
+ 385:Src/main.c    ****     {
+ 386:Src/main.c    ****       if((reg_crc & 0x01) == 1) reg_crc = (reg_crc >> 1) ^ 0xA001; 
+ 387:Src/main.c    ****       else reg_crc = reg_crc >> 1;
+ 414              		.loc 1 387 12 is_stmt 1 view .LVU103
+ 415              		.loc 1 387 20 is_stmt 0 view .LVU104
+ 416 000e 5208     		lsrs	r2, r2, #1
+ 417              	.LVL30:
+ 418              	.L25:
+ 384:Src/main.c    ****     {
+ 419              		.loc 1 384 31 is_stmt 1 discriminator 2 view .LVU105
+ 384:Src/main.c    ****     {
+ 420              		.loc 1 384 32 is_stmt 0 discriminator 2 view .LVU106
+ 421 0010 0133     		adds	r3, r3, #1
+ 422              	.LVL31:
+ 384:Src/main.c    ****     {
+ 423              		.loc 1 384 32 discriminator 2 view .LVU107
+ 424 0012 DBB2     		uxtb	r3, r3
+ 425              	.LVL32:
+ 426              	.L23:
+ 384:Src/main.c    ****     {
+ 427              		.loc 1 384 24 is_stmt 1 discriminator 1 view .LVU108
+ 384:Src/main.c    ****     {
+ 428              		.loc 1 384 5 is_stmt 0 discriminator 1 view .LVU109
+ 429 0014 072B     		cmp	r3, #7
+ 430 0016 06D8     		bhi	.L28
+ 386:Src/main.c    ****       else reg_crc = reg_crc >> 1;
+ 431              		.loc 1 386 7 is_stmt 1 view .LVU110
+ 386:Src/main.c    ****       else reg_crc = reg_crc >> 1;
+ 432              		.loc 1 386 9 is_stmt 0 view .LVU111
+ 433 0018 D107     		lsls	r1, r2, #31
+ 434 001a F8D5     		bpl	.L24
+ 386:Src/main.c    ****       else reg_crc = reg_crc >> 1;
+ 435              		.loc 1 386 33 is_stmt 1 discriminator 1 view .LVU112
+ 386:Src/main.c    ****       else reg_crc = reg_crc >> 1;
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 16
+
+
+ 436              		.loc 1 386 41 is_stmt 0 discriminator 1 view .LVU113
+ 437 001c 5208     		lsrs	r2, r2, #1
+ 438              	.LVL33:
+ 386:Src/main.c    ****       else reg_crc = reg_crc >> 1;
+ 439              		.loc 1 386 41 discriminator 1 view .LVU114
+ 440 001e 0949     		ldr	r1, .L30+4
+ 441 0020 4A40     		eors	r2, r1
+ 442 0022 92B2     		uxth	r2, r2
+ 443              	.LVL34:
+ 386:Src/main.c    ****       else reg_crc = reg_crc >> 1;
+ 444              		.loc 1 386 41 discriminator 1 view .LVU115
+ 445 0024 F4E7     		b	.L25
+ 446              	.L28:
+ 386:Src/main.c    ****       else reg_crc = reg_crc >> 1;
+ 447              		.loc 1 386 41 discriminator 1 view .LVU116
+ 448              	.LBE10:
+ 381:Src/main.c    ****   {
+ 449              		.loc 1 381 33 is_stmt 1 discriminator 2 view .LVU117
+ 381:Src/main.c    ****   {
+ 450              		.loc 1 381 34 is_stmt 0 discriminator 2 view .LVU118
+ 451 0026 0130     		adds	r0, r0, #1
+ 452              	.LVL35:
+ 381:Src/main.c    ****   {
+ 453              		.loc 1 381 34 discriminator 2 view .LVU119
+ 454 0028 80B2     		uxth	r0, r0
+ 455              	.LVL36:
+ 456              	.L22:
+ 381:Src/main.c    ****   {
+ 457              		.loc 1 381 23 is_stmt 1 discriminator 1 view .LVU120
+ 381:Src/main.c    ****   {
+ 458              		.loc 1 381 3 is_stmt 0 discriminator 1 view .LVU121
+ 459 002a A042     		cmp	r0, r4
+ 460 002c 03D2     		bcs	.L29
+ 383:Src/main.c    ****     for(uint8_t j = 0; j < 8; j++)
+ 461              		.loc 1 383 5 is_stmt 1 view .LVU122
+ 383:Src/main.c    ****     for(uint8_t j = 0; j < 8; j++)
+ 462              		.loc 1 383 21 is_stmt 0 view .LVU123
+ 463 002e 2B5C     		ldrb	r3, [r5, r0]
+ 383:Src/main.c    ****     for(uint8_t j = 0; j < 8; j++)
+ 464              		.loc 1 383 13 view .LVU124
+ 465 0030 5A40     		eors	r2, r3
+ 466              	.LVL37:
+ 384:Src/main.c    ****     {
+ 467              		.loc 1 384 5 is_stmt 1 view .LVU125
+ 468              	.LBB11:
+ 384:Src/main.c    ****     {
+ 469              		.loc 1 384 9 view .LVU126
+ 384:Src/main.c    ****     {
+ 470              		.loc 1 384 17 is_stmt 0 view .LVU127
+ 471 0032 0023     		movs	r3, #0
+ 384:Src/main.c    ****     {
+ 472              		.loc 1 384 5 view .LVU128
+ 473 0034 EEE7     		b	.L23
+ 474              	.LVL38:
+ 475              	.L29:
+ 384:Src/main.c    ****     {
+ 476              		.loc 1 384 5 view .LVU129
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 17
+
+
+ 477              	.LBE11:
+ 478              	.LBE12:
+ 388:Src/main.c    ****     }
+ 389:Src/main.c    ****   }
+ 390:Src/main.c    ****   
+ 391:Src/main.c    ****   output[1] = (reg_crc >> 8) & 0xFF; 
+ 479              		.loc 1 391 3 is_stmt 1 view .LVU130
+ 480              		.loc 1 391 13 is_stmt 0 view .LVU131
+ 481 0036 130A     		lsrs	r3, r2, #8
+ 482 0038 7370     		strb	r3, [r6, #1]
+ 392:Src/main.c    ****   output[0] = reg_crc & 0xFF; 
+ 483              		.loc 1 392 3 is_stmt 1 view .LVU132
+ 484              		.loc 1 392 13 is_stmt 0 view .LVU133
+ 485 003a 3270     		strb	r2, [r6]
+ 393:Src/main.c    **** }
+ 486              		.loc 1 393 1 view .LVU134
+ 487              		@ sp needed
+ 488              	.LVL39:
+ 489              	.LVL40:
+ 490              		.loc 1 393 1 view .LVU135
+ 491 003c 70BD     		pop	{r4, r5, r6, pc}
+ 492              	.L31:
+ 493 003e C046     		.align	2
+ 494              	.L30:
+ 495 0040 FFFF0000 		.word	65535
+ 496 0044 01A0FFFF 		.word	-24575
+ 497              		.cfi_endproc
+ 498              	.LFE321:
+ 500              		.section	.text.CRC_MODBUS,"ax",%progbits
+ 501              		.align	1
+ 502              		.global	CRC_MODBUS
+ 503              		.syntax unified
+ 504              		.code	16
+ 505              		.thumb_func
+ 507              	CRC_MODBUS:
+ 508              	.LVL41:
+ 509              	.LFB322:
+ 394:Src/main.c    **** 
+ 395:Src/main.c    **** uint8_t CRC_MODBUS(uint8_t *input, uint8_t size)
+ 396:Src/main.c    **** {
+ 510              		.loc 1 396 1 is_stmt 1 view -0
+ 511              		.cfi_startproc
+ 512              		@ args = 0, pretend = 0, frame = 8
+ 513              		@ frame_needed = 0, uses_anonymous_args = 0
+ 514              		.loc 1 396 1 is_stmt 0 view .LVU137
+ 515 0000 30B5     		push	{r4, r5, lr}
+ 516              	.LCFI6:
+ 517              		.cfi_def_cfa_offset 12
+ 518              		.cfi_offset 4, -12
+ 519              		.cfi_offset 5, -8
+ 520              		.cfi_offset 14, -4
+ 521 0002 83B0     		sub	sp, sp, #12
+ 522              	.LCFI7:
+ 523              		.cfi_def_cfa_offset 24
+ 524 0004 0400     		movs	r4, r0
+ 525 0006 0D00     		movs	r5, r1
+ 397:Src/main.c    ****   uint16_t check_sum[2];
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 18
+
+
+ 526              		.loc 1 397 3 is_stmt 1 view .LVU138
+ 398:Src/main.c    ****   uint16_t reg_crc = 0xFFFF;
+ 527              		.loc 1 398 3 view .LVU139
+ 528              	.LVL42:
+ 399:Src/main.c    **** 
+ 400:Src/main.c    ****   for(uint8_t i = 0; i < size - 2; i++) { //tru 2 bytes CRC cuoi
+ 529              		.loc 1 400 3 view .LVU140
+ 530              	.LBB13:
+ 531              		.loc 1 400 7 view .LVU141
+ 532              		.loc 1 400 15 is_stmt 0 view .LVU142
+ 533 0008 0020     		movs	r0, #0
+ 534              	.LVL43:
+ 535              		.loc 1 400 15 view .LVU143
+ 536              	.LBE13:
+ 398:Src/main.c    ****   uint16_t reg_crc = 0xFFFF;
+ 537              		.loc 1 398 12 view .LVU144
+ 538 000a 194A     		ldr	r2, .L44
+ 539              	.LBB16:
+ 540              		.loc 1 400 3 view .LVU145
+ 541 000c 13E0     		b	.L33
+ 542              	.LVL44:
+ 543              	.L35:
+ 544              	.LBB14:
+ 401:Src/main.c    ****     reg_crc ^= input[i];
+ 402:Src/main.c    **** 
+ 403:Src/main.c    ****     for(uint8_t j = 0; j < 8; j++) {
+ 404:Src/main.c    ****       if((reg_crc & 0x01) == 1) reg_crc = (reg_crc >> 1) ^ 0xA001;
+ 405:Src/main.c    ****       else reg_crc = reg_crc >> 1;
+ 545              		.loc 1 405 12 is_stmt 1 view .LVU146
+ 546              		.loc 1 405 20 is_stmt 0 view .LVU147
+ 547 000e 5208     		lsrs	r2, r2, #1
+ 548              	.LVL45:
+ 549              	.L36:
+ 403:Src/main.c    ****       if((reg_crc & 0x01) == 1) reg_crc = (reg_crc >> 1) ^ 0xA001;
+ 550              		.loc 1 403 31 is_stmt 1 discriminator 2 view .LVU148
+ 403:Src/main.c    ****       if((reg_crc & 0x01) == 1) reg_crc = (reg_crc >> 1) ^ 0xA001;
+ 551              		.loc 1 403 32 is_stmt 0 discriminator 2 view .LVU149
+ 552 0010 0133     		adds	r3, r3, #1
+ 553              	.LVL46:
+ 403:Src/main.c    ****       if((reg_crc & 0x01) == 1) reg_crc = (reg_crc >> 1) ^ 0xA001;
+ 554              		.loc 1 403 32 discriminator 2 view .LVU150
+ 555 0012 DBB2     		uxtb	r3, r3
+ 556              	.LVL47:
+ 557              	.L34:
+ 403:Src/main.c    ****       if((reg_crc & 0x01) == 1) reg_crc = (reg_crc >> 1) ^ 0xA001;
+ 558              		.loc 1 403 24 is_stmt 1 discriminator 1 view .LVU151
+ 403:Src/main.c    ****       if((reg_crc & 0x01) == 1) reg_crc = (reg_crc >> 1) ^ 0xA001;
+ 559              		.loc 1 403 5 is_stmt 0 discriminator 1 view .LVU152
+ 560 0014 072B     		cmp	r3, #7
+ 561 0016 06D8     		bhi	.L42
+ 404:Src/main.c    ****       else reg_crc = reg_crc >> 1;
+ 562              		.loc 1 404 7 is_stmt 1 view .LVU153
+ 404:Src/main.c    ****       else reg_crc = reg_crc >> 1;
+ 563              		.loc 1 404 9 is_stmt 0 view .LVU154
+ 564 0018 D107     		lsls	r1, r2, #31
+ 565 001a F8D5     		bpl	.L35
+ 404:Src/main.c    ****       else reg_crc = reg_crc >> 1;
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 19
+
+
+ 566              		.loc 1 404 33 is_stmt 1 discriminator 1 view .LVU155
+ 404:Src/main.c    ****       else reg_crc = reg_crc >> 1;
+ 567              		.loc 1 404 41 is_stmt 0 discriminator 1 view .LVU156
+ 568 001c 5208     		lsrs	r2, r2, #1
+ 569              	.LVL48:
+ 404:Src/main.c    ****       else reg_crc = reg_crc >> 1;
+ 570              		.loc 1 404 41 discriminator 1 view .LVU157
+ 571 001e 1549     		ldr	r1, .L44+4
+ 572 0020 4A40     		eors	r2, r1
+ 573 0022 92B2     		uxth	r2, r2
+ 574              	.LVL49:
+ 404:Src/main.c    ****       else reg_crc = reg_crc >> 1;
+ 575              		.loc 1 404 41 discriminator 1 view .LVU158
+ 576 0024 F4E7     		b	.L36
+ 577              	.L42:
+ 404:Src/main.c    ****       else reg_crc = reg_crc >> 1;
+ 578              		.loc 1 404 41 discriminator 1 view .LVU159
+ 579              	.LBE14:
+ 406:Src/main.c    ****     }
+ 407:Src/main.c    **** 
+ 408:Src/main.c    ****     check_sum[1] = (reg_crc >> 8) &0xFF;
+ 580              		.loc 1 408 5 is_stmt 1 discriminator 2 view .LVU160
+ 581              		.loc 1 408 18 is_stmt 0 discriminator 2 view .LVU161
+ 582 0026 01A9     		add	r1, sp, #4
+ 583 0028 130A     		lsrs	r3, r2, #8
+ 584              	.LVL50:
+ 585              		.loc 1 408 18 discriminator 2 view .LVU162
+ 586 002a 4B80     		strh	r3, [r1, #2]
+ 409:Src/main.c    ****     check_sum[0] = reg_crc & 0xFF;
+ 587              		.loc 1 409 5 is_stmt 1 discriminator 2 view .LVU163
+ 588              		.loc 1 409 28 is_stmt 0 discriminator 2 view .LVU164
+ 589 002c FF23     		movs	r3, #255
+ 590 002e 1340     		ands	r3, r2
+ 591              		.loc 1 409 18 discriminator 2 view .LVU165
+ 592 0030 0B80     		strh	r3, [r1]
+ 400:Src/main.c    ****     reg_crc ^= input[i];
+ 593              		.loc 1 400 36 is_stmt 1 discriminator 2 view .LVU166
+ 400:Src/main.c    ****     reg_crc ^= input[i];
+ 594              		.loc 1 400 37 is_stmt 0 discriminator 2 view .LVU167
+ 595 0032 0130     		adds	r0, r0, #1
+ 596              	.LVL51:
+ 400:Src/main.c    ****     reg_crc ^= input[i];
+ 597              		.loc 1 400 37 discriminator 2 view .LVU168
+ 598 0034 C0B2     		uxtb	r0, r0
+ 599              	.LVL52:
+ 600              	.L33:
+ 400:Src/main.c    ****     reg_crc ^= input[i];
+ 601              		.loc 1 400 22 is_stmt 1 discriminator 1 view .LVU169
+ 400:Src/main.c    ****     reg_crc ^= input[i];
+ 602              		.loc 1 400 31 is_stmt 0 discriminator 1 view .LVU170
+ 603 0036 AB1E     		subs	r3, r5, #2
+ 400:Src/main.c    ****     reg_crc ^= input[i];
+ 604              		.loc 1 400 3 discriminator 1 view .LVU171
+ 605 0038 9842     		cmp	r0, r3
+ 606 003a 03DA     		bge	.L43
+ 401:Src/main.c    **** 
+ 607              		.loc 1 401 5 is_stmt 1 view .LVU172
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 20
+
+
+ 401:Src/main.c    **** 
+ 608              		.loc 1 401 21 is_stmt 0 view .LVU173
+ 609 003c 235C     		ldrb	r3, [r4, r0]
+ 401:Src/main.c    **** 
+ 610              		.loc 1 401 13 view .LVU174
+ 611 003e 5A40     		eors	r2, r3
+ 612              	.LVL53:
+ 403:Src/main.c    ****       if((reg_crc & 0x01) == 1) reg_crc = (reg_crc >> 1) ^ 0xA001;
+ 613              		.loc 1 403 5 is_stmt 1 view .LVU175
+ 614              	.LBB15:
+ 403:Src/main.c    ****       if((reg_crc & 0x01) == 1) reg_crc = (reg_crc >> 1) ^ 0xA001;
+ 615              		.loc 1 403 9 view .LVU176
+ 403:Src/main.c    ****       if((reg_crc & 0x01) == 1) reg_crc = (reg_crc >> 1) ^ 0xA001;
+ 616              		.loc 1 403 17 is_stmt 0 view .LVU177
+ 617 0040 0023     		movs	r3, #0
+ 403:Src/main.c    ****       if((reg_crc & 0x01) == 1) reg_crc = (reg_crc >> 1) ^ 0xA001;
+ 618              		.loc 1 403 5 view .LVU178
+ 619 0042 E7E7     		b	.L34
+ 620              	.LVL54:
+ 621              	.L43:
+ 403:Src/main.c    ****       if((reg_crc & 0x01) == 1) reg_crc = (reg_crc >> 1) ^ 0xA001;
+ 622              		.loc 1 403 5 view .LVU179
+ 623              	.LBE15:
+ 624              	.LBE16:
+ 410:Src/main.c    ****     //debug = check_sum[0];
+ 411:Src/main.c    ****   }
+ 412:Src/main.c    **** 
+ 413:Src/main.c    ****   if(input[size-2] == check_sum[0] && input[size-1] == check_sum[1]) return 1;
+ 625              		.loc 1 413 3 is_stmt 1 view .LVU180
+ 626              		.loc 1 413 11 is_stmt 0 view .LVU181
+ 627 0044 6319     		adds	r3, r4, r5
+ 628 0046 023B     		subs	r3, r3, #2
+ 629 0048 1A78     		ldrb	r2, [r3]
+ 630              	.LVL55:
+ 631              		.loc 1 413 32 view .LVU182
+ 632 004a 01AB     		add	r3, sp, #4
+ 633 004c 1B88     		ldrh	r3, [r3]
+ 634              		.loc 1 413 5 view .LVU183
+ 635 004e 9A42     		cmp	r2, r3
+ 636 0050 08D1     		bne	.L40
+ 637              		.loc 1 413 44 discriminator 1 view .LVU184
+ 638 0052 6419     		adds	r4, r4, r5
+ 639              	.LVL56:
+ 640              		.loc 1 413 44 discriminator 1 view .LVU185
+ 641 0054 013C     		subs	r4, r4, #1
+ 642 0056 2278     		ldrb	r2, [r4]
+ 643              		.loc 1 413 65 discriminator 1 view .LVU186
+ 644 0058 01AB     		add	r3, sp, #4
+ 645 005a 5B88     		ldrh	r3, [r3, #2]
+ 646              		.loc 1 413 36 discriminator 1 view .LVU187
+ 647 005c 9A42     		cmp	r2, r3
+ 648 005e 04D0     		beq	.L41
+ 414:Src/main.c    ****   else return 0;
+ 649              		.loc 1 414 15 view .LVU188
+ 650 0060 0020     		movs	r0, #0
+ 651              	.LVL57:
+ 652              		.loc 1 414 15 view .LVU189
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 21
+
+
+ 653 0062 00E0     		b	.L39
+ 654              	.LVL58:
+ 655              	.L40:
+ 656              		.loc 1 414 15 view .LVU190
+ 657 0064 0020     		movs	r0, #0
+ 658              	.LVL59:
+ 659              	.L39:
+ 415:Src/main.c    **** }
+ 660              		.loc 1 415 1 view .LVU191
+ 661 0066 03B0     		add	sp, sp, #12
+ 662              		@ sp needed
+ 663 0068 30BD     		pop	{r4, r5, pc}
+ 664              	.LVL60:
+ 665              	.L41:
+ 413:Src/main.c    ****   else return 0;
+ 666              		.loc 1 413 77 view .LVU192
+ 667 006a 0120     		movs	r0, #1
+ 668              	.LVL61:
+ 413:Src/main.c    ****   else return 0;
+ 669              		.loc 1 413 77 view .LVU193
+ 670 006c FBE7     		b	.L39
+ 671              	.L45:
+ 672 006e C046     		.align	2
+ 673              	.L44:
+ 674 0070 FFFF0000 		.word	65535
+ 675 0074 01A0FFFF 		.word	-24575
+ 676              		.cfi_endproc
+ 677              	.LFE322:
+ 679              		.section	.text.ModbusTransHandle,"ax",%progbits
+ 680              		.align	1
+ 681              		.global	ModbusTransHandle
+ 682              		.syntax unified
+ 683              		.code	16
+ 684              		.thumb_func
+ 686              	ModbusTransHandle:
+ 687              	.LFB323:
+ 416:Src/main.c    **** 
+ 417:Src/main.c    **** void ModbusTransHandle(void)
+ 418:Src/main.c    **** {
+ 688              		.loc 1 418 1 is_stmt 1 view -0
+ 689              		.cfi_startproc
+ 690              		@ args = 0, pretend = 0, frame = 0
+ 691              		@ frame_needed = 0, uses_anonymous_args = 0
+ 692 0000 70B5     		push	{r4, r5, r6, lr}
+ 693              	.LCFI8:
+ 694              		.cfi_def_cfa_offset 16
+ 695              		.cfi_offset 4, -16
+ 696              		.cfi_offset 5, -12
+ 697              		.cfi_offset 6, -8
+ 698              		.cfi_offset 14, -4
+ 419:Src/main.c    ****   tx_data[0] = address;
+ 699              		.loc 1 419 3 view .LVU195
+ 700              		.loc 1 419 14 is_stmt 0 view .LVU196
+ 701 0002 154C     		ldr	r4, .L47
+ 702 0004 0223     		movs	r3, #2
+ 703 0006 2370     		strb	r3, [r4]
+ 420:Src/main.c    ****   tx_data[1] = function; 
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 22
+
+
+ 704              		.loc 1 420 3 is_stmt 1 view .LVU197
+ 705              		.loc 1 420 14 is_stmt 0 view .LVU198
+ 706 0008 0233     		adds	r3, r3, #2
+ 707 000a 6370     		strb	r3, [r4, #1]
+ 421:Src/main.c    ****   tx_data[2] = amongBytes; 
+ 708              		.loc 1 421 3 is_stmt 1 view .LVU199
+ 709              		.loc 1 421 14 is_stmt 0 view .LVU200
+ 710 000c A370     		strb	r3, [r4, #2]
+ 422:Src/main.c    ****   tx_data[3] = countingStatusInput1 >> 8;
+ 711              		.loc 1 422 3 is_stmt 1 view .LVU201
+ 712              		.loc 1 422 14 is_stmt 0 view .LVU202
+ 713 000e 134B     		ldr	r3, .L47+4
+ 714 0010 1B88     		ldrh	r3, [r3]
+ 715 0012 1A0A     		lsrs	r2, r3, #8
+ 716 0014 E270     		strb	r2, [r4, #3]
+ 423:Src/main.c    ****   tx_data[4] = countingStatusInput1;
+ 717              		.loc 1 423 3 is_stmt 1 view .LVU203
+ 718              		.loc 1 423 14 is_stmt 0 view .LVU204
+ 719 0016 2371     		strb	r3, [r4, #4]
+ 424:Src/main.c    ****   tx_data[5] = countingStatusInput2 >> 8;
+ 720              		.loc 1 424 3 is_stmt 1 view .LVU205
+ 721              		.loc 1 424 14 is_stmt 0 view .LVU206
+ 722 0018 114B     		ldr	r3, .L47+8
+ 723 001a 1B88     		ldrh	r3, [r3]
+ 724 001c 1A0A     		lsrs	r2, r3, #8
+ 725 001e 6271     		strb	r2, [r4, #5]
+ 425:Src/main.c    ****   tx_data[6] = countingStatusInput2;  
+ 726              		.loc 1 425 3 is_stmt 1 view .LVU207
+ 727              		.loc 1 425 14 is_stmt 0 view .LVU208
+ 728 0020 A371     		strb	r3, [r4, #6]
+ 426:Src/main.c    ****   tx_data[7] = countingStatusInput3 >> 8;
+ 729              		.loc 1 426 3 is_stmt 1 view .LVU209
+ 730              		.loc 1 426 14 is_stmt 0 view .LVU210
+ 731 0022 104B     		ldr	r3, .L47+12
+ 732 0024 1B88     		ldrh	r3, [r3]
+ 733 0026 1A0A     		lsrs	r2, r3, #8
+ 734 0028 E271     		strb	r2, [r4, #7]
+ 427:Src/main.c    ****   tx_data[8] = countingStatusInput3; 
+ 735              		.loc 1 427 3 is_stmt 1 view .LVU211
+ 736              		.loc 1 427 14 is_stmt 0 view .LVU212
+ 737 002a 2372     		strb	r3, [r4, #8]
+ 428:Src/main.c    **** 
+ 429:Src/main.c    ****   Calc_CRC16(tx_data, 9, checkSumCRC); 
+ 738              		.loc 1 429 3 is_stmt 1 view .LVU213
+ 739 002c 0E4D     		ldr	r5, .L47+16
+ 740 002e 2A00     		movs	r2, r5
+ 741 0030 0921     		movs	r1, #9
+ 742 0032 2000     		movs	r0, r4
+ 743 0034 FFF7FEFF 		bl	Calc_CRC16
+ 744              	.LVL62:
+ 430:Src/main.c    **** 
+ 431:Src/main.c    ****   tx_data[9] = checkSumCRC[0];
+ 745              		.loc 1 431 3 view .LVU214
+ 746              		.loc 1 431 27 is_stmt 0 view .LVU215
+ 747 0038 2B78     		ldrb	r3, [r5]
+ 748              		.loc 1 431 14 view .LVU216
+ 749 003a 6372     		strb	r3, [r4, #9]
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 23
+
+
+ 432:Src/main.c    ****   tx_data[10] = checkSumCRC[1];  
+ 750              		.loc 1 432 3 is_stmt 1 view .LVU217
+ 751              		.loc 1 432 28 is_stmt 0 view .LVU218
+ 752 003c 6B78     		ldrb	r3, [r5, #1]
+ 753              		.loc 1 432 15 view .LVU219
+ 754 003e A372     		strb	r3, [r4, #10]
+ 433:Src/main.c    ****   HAL_UART_Transmit(&huart1, tx_data, 11, 1000); 
+ 755              		.loc 1 433 3 is_stmt 1 view .LVU220
+ 756 0040 FA23     		movs	r3, #250
+ 757 0042 9B00     		lsls	r3, r3, #2
+ 758 0044 0B22     		movs	r2, #11
+ 759 0046 2100     		movs	r1, r4
+ 760 0048 0848     		ldr	r0, .L47+20
+ 761 004a FFF7FEFF 		bl	HAL_UART_Transmit
+ 762              	.LVL63:
+ 434:Src/main.c    **** 
+ 435:Src/main.c    ****   clearUart(tx_data, uartBytes); 
+ 763              		.loc 1 435 3 view .LVU221
+ 764 004e 3221     		movs	r1, #50
+ 765 0050 2000     		movs	r0, r4
+ 766 0052 FFF7FEFF 		bl	clearUart
+ 767              	.LVL64:
+ 436:Src/main.c    **** }
+ 768              		.loc 1 436 1 is_stmt 0 view .LVU222
+ 769              		@ sp needed
+ 770 0056 70BD     		pop	{r4, r5, r6, pc}
+ 771              	.L48:
+ 772              		.align	2
+ 773              	.L47:
+ 774 0058 00000000 		.word	.LANCHOR5
+ 775 005c 00000000 		.word	.LANCHOR6
+ 776 0060 00000000 		.word	.LANCHOR7
+ 777 0064 00000000 		.word	.LANCHOR8
+ 778 0068 00000000 		.word	.LANCHOR9
+ 779 006c 00000000 		.word	huart1
+ 780              		.cfi_endproc
+ 781              	.LFE323:
+ 783              		.section	.text.Error_Handler,"ax",%progbits
+ 784              		.align	1
+ 785              		.global	Error_Handler
+ 786              		.syntax unified
+ 787              		.code	16
+ 788              		.thumb_func
+ 790              	Error_Handler:
+ 791              	.LFB324:
+ 437:Src/main.c    **** 
+ 438:Src/main.c    **** /* USER CODE END 4 */
+ 439:Src/main.c    **** 
+ 440:Src/main.c    **** /**
+ 441:Src/main.c    ****   * @brief  This function is executed in case of error occurrence.
+ 442:Src/main.c    ****   * @retval None
+ 443:Src/main.c    ****   */
+ 444:Src/main.c    **** void Error_Handler(void)
+ 445:Src/main.c    **** {
+ 792              		.loc 1 445 1 is_stmt 1 view -0
+ 793              		.cfi_startproc
+ 794              		@ Volatile: function does not return.
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 24
+
+
+ 795              		@ args = 0, pretend = 0, frame = 0
+ 796              		@ frame_needed = 0, uses_anonymous_args = 0
+ 797              		@ link register save eliminated.
+ 446:Src/main.c    ****   /* USER CODE BEGIN Error_Handler_Debug */
+ 447:Src/main.c    ****   /* User can add his own implementation to report the HAL error return state */
+ 448:Src/main.c    ****   __disable_irq();
+ 798              		.loc 1 448 3 view .LVU224
+ 799              	.LBB17:
+ 800              	.LBI17:
+ 801              		.file 2 "Drivers/CMSIS/Include/cmsis_gcc.h"
+   1:Drivers/CMSIS/Include/cmsis_gcc.h **** /**************************************************************************//**
+   2:Drivers/CMSIS/Include/cmsis_gcc.h ****  * @file     cmsis_gcc.h
+   3:Drivers/CMSIS/Include/cmsis_gcc.h ****  * @brief    CMSIS compiler GCC header file
+   4:Drivers/CMSIS/Include/cmsis_gcc.h ****  * @version  V5.2.0
+   5:Drivers/CMSIS/Include/cmsis_gcc.h ****  * @date     08. May 2019
+   6:Drivers/CMSIS/Include/cmsis_gcc.h ****  ******************************************************************************/
+   7:Drivers/CMSIS/Include/cmsis_gcc.h **** /*
+   8:Drivers/CMSIS/Include/cmsis_gcc.h ****  * Copyright (c) 2009-2019 Arm Limited. All rights reserved.
+   9:Drivers/CMSIS/Include/cmsis_gcc.h ****  *
+  10:Drivers/CMSIS/Include/cmsis_gcc.h ****  * SPDX-License-Identifier: Apache-2.0
+  11:Drivers/CMSIS/Include/cmsis_gcc.h ****  *
+  12:Drivers/CMSIS/Include/cmsis_gcc.h ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+  13:Drivers/CMSIS/Include/cmsis_gcc.h ****  * not use this file except in compliance with the License.
+  14:Drivers/CMSIS/Include/cmsis_gcc.h ****  * You may obtain a copy of the License at
+  15:Drivers/CMSIS/Include/cmsis_gcc.h ****  *
+  16:Drivers/CMSIS/Include/cmsis_gcc.h ****  * www.apache.org/licenses/LICENSE-2.0
+  17:Drivers/CMSIS/Include/cmsis_gcc.h ****  *
+  18:Drivers/CMSIS/Include/cmsis_gcc.h ****  * Unless required by applicable law or agreed to in writing, software
+  19:Drivers/CMSIS/Include/cmsis_gcc.h ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  20:Drivers/CMSIS/Include/cmsis_gcc.h ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  21:Drivers/CMSIS/Include/cmsis_gcc.h ****  * See the License for the specific language governing permissions and
+  22:Drivers/CMSIS/Include/cmsis_gcc.h ****  * limitations under the License.
+  23:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+  24:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+  25:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef __CMSIS_GCC_H
+  26:Drivers/CMSIS/Include/cmsis_gcc.h **** #define __CMSIS_GCC_H
+  27:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+  28:Drivers/CMSIS/Include/cmsis_gcc.h **** /* ignore some GCC warnings */
+  29:Drivers/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic push
+  30:Drivers/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wsign-conversion"
+  31:Drivers/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wconversion"
+  32:Drivers/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wunused-parameter"
+  33:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+  34:Drivers/CMSIS/Include/cmsis_gcc.h **** /* Fallback for __has_builtin */
+  35:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef __has_builtin
+  36:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __has_builtin(x) (0)
+  37:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  38:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+  39:Drivers/CMSIS/Include/cmsis_gcc.h **** /* CMSIS compiler specific defines */
+  40:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __ASM
+  41:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __ASM                                  __asm
+  42:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  43:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __INLINE
+  44:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __INLINE                               inline
+  45:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  46:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __STATIC_INLINE
+  47:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __STATIC_INLINE                        static inline
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 25
+
+
+  48:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  49:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __STATIC_FORCEINLINE                 
+  50:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __STATIC_FORCEINLINE                   __attribute__((always_inline)) static inline
+  51:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif                                           
+  52:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __NO_RETURN
+  53:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __NO_RETURN                            __attribute__((__noreturn__))
+  54:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  55:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __USED
+  56:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __USED                                 __attribute__((used))
+  57:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  58:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __WEAK
+  59:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __WEAK                                 __attribute__((weak))
+  60:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  61:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __PACKED
+  62:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __PACKED                               __attribute__((packed, aligned(1)))
+  63:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  64:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __PACKED_STRUCT
+  65:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __PACKED_STRUCT                        struct __attribute__((packed, aligned(1)))
+  66:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  67:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __PACKED_UNION
+  68:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __PACKED_UNION                         union __attribute__((packed, aligned(1)))
+  69:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  70:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32        /* deprecated */
+  71:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  72:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  73:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  74:Drivers/CMSIS/Include/cmsis_gcc.h ****   struct __attribute__((packed)) T_UINT32 { uint32_t v; };
+  75:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  76:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32(x)                  (((struct T_UINT32 *)(x))->v)
+  77:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  78:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_WRITE
+  79:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  80:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  81:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  82:Drivers/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_WRITE { uint16_t v; };
+  83:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  84:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_WRITE(addr, val)    (void)((((struct T_UINT16_WRITE *)(void *)(addr))-
+  85:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  86:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_READ
+  87:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  88:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  89:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  90:Drivers/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_READ { uint16_t v; };
+  91:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  92:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_READ(addr)          (((const struct T_UINT16_READ *)(const void *)(add
+  93:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  94:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_WRITE
+  95:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  96:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  97:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  98:Drivers/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_WRITE { uint32_t v; };
+  99:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+ 100:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_WRITE(addr, val)    (void)((((struct T_UINT32_WRITE *)(void *)(addr))-
+ 101:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 102:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_READ
+ 103:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+ 104:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 26
+
+
+ 105:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+ 106:Drivers/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_READ { uint32_t v; };
+ 107:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+ 108:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_READ(addr)          (((const struct T_UINT32_READ *)(const void *)(add
+ 109:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 110:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __ALIGNED
+ 111:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __ALIGNED(x)                           __attribute__((aligned(x)))
+ 112:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 113:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __RESTRICT
+ 114:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __RESTRICT                             __restrict
+ 115:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 116:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __COMPILER_BARRIER
+ 117:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __COMPILER_BARRIER()                   __ASM volatile("":::"memory")
+ 118:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 119:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 120:Drivers/CMSIS/Include/cmsis_gcc.h **** /* #########################  Startup and Lowlevel Init  ######################## */
+ 121:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 122:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef __PROGRAM_START
+ 123:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 124:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 125:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Initializes data and bss sections
+ 126:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details This default implementations initialized all data and additional bss
+ 127:Drivers/CMSIS/Include/cmsis_gcc.h ****            sections relying on .copy.table and .zero.table specified properly
+ 128:Drivers/CMSIS/Include/cmsis_gcc.h ****            in the used linker script.
+ 129:Drivers/CMSIS/Include/cmsis_gcc.h ****   
+ 130:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 131:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE __NO_RETURN void __cmsis_start(void)
+ 132:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 133:Drivers/CMSIS/Include/cmsis_gcc.h ****   extern void _start(void) __NO_RETURN;
+ 134:Drivers/CMSIS/Include/cmsis_gcc.h ****   
+ 135:Drivers/CMSIS/Include/cmsis_gcc.h ****   typedef struct {
+ 136:Drivers/CMSIS/Include/cmsis_gcc.h ****     uint32_t const* src;
+ 137:Drivers/CMSIS/Include/cmsis_gcc.h ****     uint32_t* dest;
+ 138:Drivers/CMSIS/Include/cmsis_gcc.h ****     uint32_t  wlen;
+ 139:Drivers/CMSIS/Include/cmsis_gcc.h ****   } __copy_table_t;
+ 140:Drivers/CMSIS/Include/cmsis_gcc.h ****   
+ 141:Drivers/CMSIS/Include/cmsis_gcc.h ****   typedef struct {
+ 142:Drivers/CMSIS/Include/cmsis_gcc.h ****     uint32_t* dest;
+ 143:Drivers/CMSIS/Include/cmsis_gcc.h ****     uint32_t  wlen;
+ 144:Drivers/CMSIS/Include/cmsis_gcc.h ****   } __zero_table_t;
+ 145:Drivers/CMSIS/Include/cmsis_gcc.h ****   
+ 146:Drivers/CMSIS/Include/cmsis_gcc.h ****   extern const __copy_table_t __copy_table_start__;
+ 147:Drivers/CMSIS/Include/cmsis_gcc.h ****   extern const __copy_table_t __copy_table_end__;
+ 148:Drivers/CMSIS/Include/cmsis_gcc.h ****   extern const __zero_table_t __zero_table_start__;
+ 149:Drivers/CMSIS/Include/cmsis_gcc.h ****   extern const __zero_table_t __zero_table_end__;
+ 150:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 151:Drivers/CMSIS/Include/cmsis_gcc.h ****   for (__copy_table_t const* pTable = &__copy_table_start__; pTable < &__copy_table_end__; ++pTable
+ 152:Drivers/CMSIS/Include/cmsis_gcc.h ****     for(uint32_t i=0u; i<pTable->wlen; ++i) {
+ 153:Drivers/CMSIS/Include/cmsis_gcc.h ****       pTable->dest[i] = pTable->src[i];
+ 154:Drivers/CMSIS/Include/cmsis_gcc.h ****     }
+ 155:Drivers/CMSIS/Include/cmsis_gcc.h ****   }
+ 156:Drivers/CMSIS/Include/cmsis_gcc.h ****  
+ 157:Drivers/CMSIS/Include/cmsis_gcc.h ****   for (__zero_table_t const* pTable = &__zero_table_start__; pTable < &__zero_table_end__; ++pTable
+ 158:Drivers/CMSIS/Include/cmsis_gcc.h ****     for(uint32_t i=0u; i<pTable->wlen; ++i) {
+ 159:Drivers/CMSIS/Include/cmsis_gcc.h ****       pTable->dest[i] = 0u;
+ 160:Drivers/CMSIS/Include/cmsis_gcc.h ****     }
+ 161:Drivers/CMSIS/Include/cmsis_gcc.h ****   }
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 27
+
+
+ 162:Drivers/CMSIS/Include/cmsis_gcc.h ****  
+ 163:Drivers/CMSIS/Include/cmsis_gcc.h ****   _start();
+ 164:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 165:Drivers/CMSIS/Include/cmsis_gcc.h ****   
+ 166:Drivers/CMSIS/Include/cmsis_gcc.h **** #define __PROGRAM_START           __cmsis_start
+ 167:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 168:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 169:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef __INITIAL_SP
+ 170:Drivers/CMSIS/Include/cmsis_gcc.h **** #define __INITIAL_SP              __StackTop
+ 171:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 172:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 173:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef __STACK_LIMIT
+ 174:Drivers/CMSIS/Include/cmsis_gcc.h **** #define __STACK_LIMIT             __StackLimit
+ 175:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 176:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 177:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef __VECTOR_TABLE
+ 178:Drivers/CMSIS/Include/cmsis_gcc.h **** #define __VECTOR_TABLE            __Vectors
+ 179:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 180:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 181:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef __VECTOR_TABLE_ATTRIBUTE
+ 182:Drivers/CMSIS/Include/cmsis_gcc.h **** #define __VECTOR_TABLE_ATTRIBUTE  __attribute((used, section(".vectors")))
+ 183:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 184:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 185:Drivers/CMSIS/Include/cmsis_gcc.h **** /* ###########################  Core Function Access  ########################### */
+ 186:Drivers/CMSIS/Include/cmsis_gcc.h **** /** \ingroup  CMSIS_Core_FunctionInterface
+ 187:Drivers/CMSIS/Include/cmsis_gcc.h ****     \defgroup CMSIS_Core_RegAccFunctions CMSIS Core Register Access Functions
+ 188:Drivers/CMSIS/Include/cmsis_gcc.h ****   @{
+ 189:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 190:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 191:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 192:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Enable IRQ Interrupts
+ 193:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Enables IRQ interrupts by clearing the I-bit in the CPSR.
+ 194:Drivers/CMSIS/Include/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 195:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 196:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __enable_irq(void)
+ 197:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 198:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("cpsie i" : : : "memory");
+ 199:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 200:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 201:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 202:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 203:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Disable IRQ Interrupts
+ 204:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Disables IRQ interrupts by setting the I-bit in the CPSR.
+ 205:Drivers/CMSIS/Include/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 206:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 207:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __disable_irq(void)
+ 802              		.loc 2 207 27 view .LVU225
+ 803              	.LBB18:
+ 208:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 209:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("cpsid i" : : : "memory");
+ 804              		.loc 2 209 3 view .LVU226
+ 805              		.syntax divided
+ 806              	@ 209 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 807 0000 72B6     		cpsid i
+ 808              	@ 0 "" 2
+ 809              		.thumb
+ 810              		.syntax unified
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 28
+
+
+ 811              	.L50:
+ 812              	.LBE18:
+ 813              	.LBE17:
+ 449:Src/main.c    ****   while (1)
+ 814              		.loc 1 449 3 discriminator 1 view .LVU227
+ 450:Src/main.c    ****   {
+ 451:Src/main.c    ****   }
+ 815              		.loc 1 451 3 discriminator 1 view .LVU228
+ 449:Src/main.c    ****   while (1)
+ 816              		.loc 1 449 9 discriminator 1 view .LVU229
+ 817 0002 FEE7     		b	.L50
+ 818              		.cfi_endproc
+ 819              	.LFE324:
+ 821              		.section	.text.MX_USART1_UART_Init,"ax",%progbits
+ 822              		.align	1
+ 823              		.syntax unified
+ 824              		.code	16
+ 825              		.thumb_func
+ 827              	MX_USART1_UART_Init:
+ 828              	.LFB317:
+ 289:Src/main.c    **** 
+ 829              		.loc 1 289 1 view -0
+ 830              		.cfi_startproc
+ 831              		@ args = 0, pretend = 0, frame = 0
+ 832              		@ frame_needed = 0, uses_anonymous_args = 0
+ 833 0000 10B5     		push	{r4, lr}
+ 834              	.LCFI9:
+ 835              		.cfi_def_cfa_offset 8
+ 836              		.cfi_offset 4, -8
+ 837              		.cfi_offset 14, -4
+ 298:Src/main.c    ****   huart1.Init.BaudRate = 115200;
+ 838              		.loc 1 298 3 view .LVU231
+ 298:Src/main.c    ****   huart1.Init.BaudRate = 115200;
+ 839              		.loc 1 298 19 is_stmt 0 view .LVU232
+ 840 0002 1748     		ldr	r0, .L60
+ 841 0004 174B     		ldr	r3, .L60+4
+ 842 0006 0360     		str	r3, [r0]
+ 299:Src/main.c    ****   huart1.Init.WordLength = UART_WORDLENGTH_8B;
+ 843              		.loc 1 299 3 is_stmt 1 view .LVU233
+ 299:Src/main.c    ****   huart1.Init.WordLength = UART_WORDLENGTH_8B;
+ 844              		.loc 1 299 24 is_stmt 0 view .LVU234
+ 845 0008 E123     		movs	r3, #225
+ 846 000a 5B02     		lsls	r3, r3, #9
+ 847 000c 4360     		str	r3, [r0, #4]
+ 300:Src/main.c    ****   huart1.Init.StopBits = UART_STOPBITS_1;
+ 848              		.loc 1 300 3 is_stmt 1 view .LVU235
+ 300:Src/main.c    ****   huart1.Init.StopBits = UART_STOPBITS_1;
+ 849              		.loc 1 300 26 is_stmt 0 view .LVU236
+ 850 000e 0023     		movs	r3, #0
+ 851 0010 8360     		str	r3, [r0, #8]
+ 301:Src/main.c    ****   huart1.Init.Parity = UART_PARITY_NONE;
+ 852              		.loc 1 301 3 is_stmt 1 view .LVU237
+ 301:Src/main.c    ****   huart1.Init.Parity = UART_PARITY_NONE;
+ 853              		.loc 1 301 24 is_stmt 0 view .LVU238
+ 854 0012 C360     		str	r3, [r0, #12]
+ 302:Src/main.c    ****   huart1.Init.Mode = UART_MODE_TX_RX;
+ 855              		.loc 1 302 3 is_stmt 1 view .LVU239
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 29
+
+
+ 302:Src/main.c    ****   huart1.Init.Mode = UART_MODE_TX_RX;
+ 856              		.loc 1 302 22 is_stmt 0 view .LVU240
+ 857 0014 0361     		str	r3, [r0, #16]
+ 303:Src/main.c    ****   huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+ 858              		.loc 1 303 3 is_stmt 1 view .LVU241
+ 303:Src/main.c    ****   huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+ 859              		.loc 1 303 20 is_stmt 0 view .LVU242
+ 860 0016 0C22     		movs	r2, #12
+ 861 0018 4261     		str	r2, [r0, #20]
+ 304:Src/main.c    ****   huart1.Init.OverSampling = UART_OVERSAMPLING_16;
+ 862              		.loc 1 304 3 is_stmt 1 view .LVU243
+ 304:Src/main.c    ****   huart1.Init.OverSampling = UART_OVERSAMPLING_16;
+ 863              		.loc 1 304 25 is_stmt 0 view .LVU244
+ 864 001a 8361     		str	r3, [r0, #24]
+ 305:Src/main.c    ****   huart1.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+ 865              		.loc 1 305 3 is_stmt 1 view .LVU245
+ 305:Src/main.c    ****   huart1.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+ 866              		.loc 1 305 28 is_stmt 0 view .LVU246
+ 867 001c C361     		str	r3, [r0, #28]
+ 306:Src/main.c    ****   huart1.Init.ClockPrescaler = UART_PRESCALER_DIV1;
+ 868              		.loc 1 306 3 is_stmt 1 view .LVU247
+ 306:Src/main.c    ****   huart1.Init.ClockPrescaler = UART_PRESCALER_DIV1;
+ 869              		.loc 1 306 30 is_stmt 0 view .LVU248
+ 870 001e 0362     		str	r3, [r0, #32]
+ 307:Src/main.c    ****   huart1.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+ 871              		.loc 1 307 3 is_stmt 1 view .LVU249
+ 307:Src/main.c    ****   huart1.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+ 872              		.loc 1 307 30 is_stmt 0 view .LVU250
+ 873 0020 4362     		str	r3, [r0, #36]
+ 308:Src/main.c    ****   if (HAL_UART_Init(&huart1) != HAL_OK)
+ 874              		.loc 1 308 3 is_stmt 1 view .LVU251
+ 308:Src/main.c    ****   if (HAL_UART_Init(&huart1) != HAL_OK)
+ 875              		.loc 1 308 38 is_stmt 0 view .LVU252
+ 876 0022 8362     		str	r3, [r0, #40]
+ 309:Src/main.c    ****   {
+ 877              		.loc 1 309 3 is_stmt 1 view .LVU253
+ 309:Src/main.c    ****   {
+ 878              		.loc 1 309 7 is_stmt 0 view .LVU254
+ 879 0024 FFF7FEFF 		bl	HAL_UART_Init
+ 880              	.LVL65:
+ 309:Src/main.c    ****   {
+ 881              		.loc 1 309 6 view .LVU255
+ 882 0028 0028     		cmp	r0, #0
+ 883 002a 11D1     		bne	.L56
+ 313:Src/main.c    ****   {
+ 884              		.loc 1 313 3 is_stmt 1 view .LVU256
+ 313:Src/main.c    ****   {
+ 885              		.loc 1 313 7 is_stmt 0 view .LVU257
+ 886 002c 0021     		movs	r1, #0
+ 887 002e 0C48     		ldr	r0, .L60
+ 888 0030 FFF7FEFF 		bl	HAL_UARTEx_SetTxFifoThreshold
+ 889              	.LVL66:
+ 313:Src/main.c    ****   {
+ 890              		.loc 1 313 6 view .LVU258
+ 891 0034 0028     		cmp	r0, #0
+ 892 0036 0DD1     		bne	.L57
+ 317:Src/main.c    ****   {
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 30
+
+
+ 893              		.loc 1 317 3 is_stmt 1 view .LVU259
+ 317:Src/main.c    ****   {
+ 894              		.loc 1 317 7 is_stmt 0 view .LVU260
+ 895 0038 0021     		movs	r1, #0
+ 896 003a 0948     		ldr	r0, .L60
+ 897 003c FFF7FEFF 		bl	HAL_UARTEx_SetRxFifoThreshold
+ 898              	.LVL67:
+ 317:Src/main.c    ****   {
+ 899              		.loc 1 317 6 view .LVU261
+ 900 0040 0028     		cmp	r0, #0
+ 901 0042 09D1     		bne	.L58
+ 321:Src/main.c    ****   {
+ 902              		.loc 1 321 3 is_stmt 1 view .LVU262
+ 321:Src/main.c    ****   {
+ 903              		.loc 1 321 7 is_stmt 0 view .LVU263
+ 904 0044 0648     		ldr	r0, .L60
+ 905 0046 FFF7FEFF 		bl	HAL_UARTEx_DisableFifoMode
+ 906              	.LVL68:
+ 321:Src/main.c    ****   {
+ 907              		.loc 1 321 6 view .LVU264
+ 908 004a 0028     		cmp	r0, #0
+ 909 004c 06D1     		bne	.L59
+ 329:Src/main.c    **** 
+ 910              		.loc 1 329 1 view .LVU265
+ 911              		@ sp needed
+ 912 004e 10BD     		pop	{r4, pc}
+ 913              	.L56:
+ 311:Src/main.c    ****   }
+ 914              		.loc 1 311 5 is_stmt 1 view .LVU266
+ 915 0050 FFF7FEFF 		bl	Error_Handler
+ 916              	.LVL69:
+ 917              	.L57:
+ 315:Src/main.c    ****   }
+ 918              		.loc 1 315 5 view .LVU267
+ 919 0054 FFF7FEFF 		bl	Error_Handler
+ 920              	.LVL70:
+ 921              	.L58:
+ 319:Src/main.c    ****   }
+ 922              		.loc 1 319 5 view .LVU268
+ 923 0058 FFF7FEFF 		bl	Error_Handler
+ 924              	.LVL71:
+ 925              	.L59:
+ 323:Src/main.c    ****   }
+ 926              		.loc 1 323 5 view .LVU269
+ 927 005c FFF7FEFF 		bl	Error_Handler
+ 928              	.LVL72:
+ 929              	.L61:
+ 930              		.align	2
+ 931              	.L60:
+ 932 0060 00000000 		.word	huart1
+ 933 0064 00380140 		.word	1073821696
+ 934              		.cfi_endproc
+ 935              	.LFE317:
+ 937              		.section	.text.MX_TIM3_Init,"ax",%progbits
+ 938              		.align	1
+ 939              		.syntax unified
+ 940              		.code	16
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 31
+
+
+ 941              		.thumb_func
+ 943              	MX_TIM3_Init:
+ 944              	.LFB316:
+ 244:Src/main.c    **** 
+ 945              		.loc 1 244 1 view -0
+ 946              		.cfi_startproc
+ 947              		@ args = 0, pretend = 0, frame = 32
+ 948              		@ frame_needed = 0, uses_anonymous_args = 0
+ 949 0000 00B5     		push	{lr}
+ 950              	.LCFI10:
+ 951              		.cfi_def_cfa_offset 4
+ 952              		.cfi_offset 14, -4
+ 953 0002 89B0     		sub	sp, sp, #36
+ 954              	.LCFI11:
+ 955              		.cfi_def_cfa_offset 40
+ 250:Src/main.c    ****   TIM_MasterConfigTypeDef sMasterConfig = {0};
+ 956              		.loc 1 250 3 view .LVU271
+ 250:Src/main.c    ****   TIM_MasterConfigTypeDef sMasterConfig = {0};
+ 957              		.loc 1 250 26 is_stmt 0 view .LVU272
+ 958 0004 1022     		movs	r2, #16
+ 959 0006 0021     		movs	r1, #0
+ 960 0008 04A8     		add	r0, sp, #16
+ 961 000a FFF7FEFF 		bl	memset
+ 962              	.LVL73:
+ 251:Src/main.c    **** 
+ 963              		.loc 1 251 3 is_stmt 1 view .LVU273
+ 251:Src/main.c    **** 
+ 964              		.loc 1 251 27 is_stmt 0 view .LVU274
+ 965 000e 0C22     		movs	r2, #12
+ 966 0010 0021     		movs	r1, #0
+ 967 0012 01A8     		add	r0, sp, #4
+ 968 0014 FFF7FEFF 		bl	memset
+ 969              	.LVL74:
+ 256:Src/main.c    ****   htim3.Init.Prescaler = 16000;
+ 970              		.loc 1 256 3 is_stmt 1 view .LVU275
+ 256:Src/main.c    ****   htim3.Init.Prescaler = 16000;
+ 971              		.loc 1 256 18 is_stmt 0 view .LVU276
+ 972 0018 1548     		ldr	r0, .L69
+ 973 001a 164B     		ldr	r3, .L69+4
+ 974 001c 0360     		str	r3, [r0]
+ 257:Src/main.c    ****   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
+ 975              		.loc 1 257 3 is_stmt 1 view .LVU277
+ 257:Src/main.c    ****   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
+ 976              		.loc 1 257 24 is_stmt 0 view .LVU278
+ 977 001e FA23     		movs	r3, #250
+ 978 0020 9B01     		lsls	r3, r3, #6
+ 979 0022 4360     		str	r3, [r0, #4]
+ 258:Src/main.c    ****   htim3.Init.Period = 65535;
+ 980              		.loc 1 258 3 is_stmt 1 view .LVU279
+ 258:Src/main.c    ****   htim3.Init.Period = 65535;
+ 981              		.loc 1 258 26 is_stmt 0 view .LVU280
+ 982 0024 0023     		movs	r3, #0
+ 983 0026 8360     		str	r3, [r0, #8]
+ 259:Src/main.c    ****   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+ 984              		.loc 1 259 3 is_stmt 1 view .LVU281
+ 259:Src/main.c    ****   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+ 985              		.loc 1 259 21 is_stmt 0 view .LVU282
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 32
+
+
+ 986 0028 134A     		ldr	r2, .L69+8
+ 987 002a C260     		str	r2, [r0, #12]
+ 260:Src/main.c    ****   htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+ 988              		.loc 1 260 3 is_stmt 1 view .LVU283
+ 260:Src/main.c    ****   htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+ 989              		.loc 1 260 28 is_stmt 0 view .LVU284
+ 990 002c 0361     		str	r3, [r0, #16]
+ 261:Src/main.c    ****   if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
+ 991              		.loc 1 261 3 is_stmt 1 view .LVU285
+ 261:Src/main.c    ****   if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
+ 992              		.loc 1 261 32 is_stmt 0 view .LVU286
+ 993 002e 8033     		adds	r3, r3, #128
+ 994 0030 8361     		str	r3, [r0, #24]
+ 262:Src/main.c    ****   {
+ 995              		.loc 1 262 3 is_stmt 1 view .LVU287
+ 262:Src/main.c    ****   {
+ 996              		.loc 1 262 7 is_stmt 0 view .LVU288
+ 997 0032 FFF7FEFF 		bl	HAL_TIM_Base_Init
+ 998              	.LVL75:
+ 262:Src/main.c    ****   {
+ 999              		.loc 1 262 6 view .LVU289
+ 1000 0036 0028     		cmp	r0, #0
+ 1001 0038 13D1     		bne	.L66
+ 266:Src/main.c    ****   if (HAL_TIM_ConfigClockSource(&htim3, &sClockSourceConfig) != HAL_OK)
+ 1002              		.loc 1 266 3 is_stmt 1 view .LVU290
+ 266:Src/main.c    ****   if (HAL_TIM_ConfigClockSource(&htim3, &sClockSourceConfig) != HAL_OK)
+ 1003              		.loc 1 266 34 is_stmt 0 view .LVU291
+ 1004 003a 8023     		movs	r3, #128
+ 1005 003c 5B01     		lsls	r3, r3, #5
+ 1006 003e 0493     		str	r3, [sp, #16]
+ 267:Src/main.c    ****   {
+ 1007              		.loc 1 267 3 is_stmt 1 view .LVU292
+ 267:Src/main.c    ****   {
+ 1008              		.loc 1 267 7 is_stmt 0 view .LVU293
+ 1009 0040 04A9     		add	r1, sp, #16
+ 1010 0042 0B48     		ldr	r0, .L69
+ 1011 0044 FFF7FEFF 		bl	HAL_TIM_ConfigClockSource
+ 1012              	.LVL76:
+ 267:Src/main.c    ****   {
+ 1013              		.loc 1 267 6 view .LVU294
+ 1014 0048 0028     		cmp	r0, #0
+ 1015 004a 0CD1     		bne	.L67
+ 271:Src/main.c    ****   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+ 1016              		.loc 1 271 3 is_stmt 1 view .LVU295
+ 271:Src/main.c    ****   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+ 1017              		.loc 1 271 37 is_stmt 0 view .LVU296
+ 1018 004c 0023     		movs	r3, #0
+ 1019 004e 0193     		str	r3, [sp, #4]
+ 272:Src/main.c    ****   if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
+ 1020              		.loc 1 272 3 is_stmt 1 view .LVU297
+ 272:Src/main.c    ****   if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
+ 1021              		.loc 1 272 33 is_stmt 0 view .LVU298
+ 1022 0050 0393     		str	r3, [sp, #12]
+ 273:Src/main.c    ****   {
+ 1023              		.loc 1 273 3 is_stmt 1 view .LVU299
+ 273:Src/main.c    ****   {
+ 1024              		.loc 1 273 7 is_stmt 0 view .LVU300
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 33
+
+
+ 1025 0052 01A9     		add	r1, sp, #4
+ 1026 0054 0648     		ldr	r0, .L69
+ 1027 0056 FFF7FEFF 		bl	HAL_TIMEx_MasterConfigSynchronization
+ 1028              	.LVL77:
+ 273:Src/main.c    ****   {
+ 1029              		.loc 1 273 6 view .LVU301
+ 1030 005a 0028     		cmp	r0, #0
+ 1031 005c 05D1     		bne	.L68
+ 281:Src/main.c    **** 
+ 1032              		.loc 1 281 1 view .LVU302
+ 1033 005e 09B0     		add	sp, sp, #36
+ 1034              		@ sp needed
+ 1035 0060 00BD     		pop	{pc}
+ 1036              	.L66:
+ 264:Src/main.c    ****   }
+ 1037              		.loc 1 264 5 is_stmt 1 view .LVU303
+ 1038 0062 FFF7FEFF 		bl	Error_Handler
+ 1039              	.LVL78:
+ 1040              	.L67:
+ 269:Src/main.c    ****   }
+ 1041              		.loc 1 269 5 view .LVU304
+ 1042 0066 FFF7FEFF 		bl	Error_Handler
+ 1043              	.LVL79:
+ 1044              	.L68:
+ 275:Src/main.c    ****   }
+ 1045              		.loc 1 275 5 view .LVU305
+ 1046 006a FFF7FEFF 		bl	Error_Handler
+ 1047              	.LVL80:
+ 1048              	.L70:
+ 1049 006e C046     		.align	2
+ 1050              	.L69:
+ 1051 0070 00000000 		.word	.LANCHOR1
+ 1052 0074 00040040 		.word	1073742848
+ 1053 0078 FFFF0000 		.word	65535
+ 1054              		.cfi_endproc
+ 1055              	.LFE316:
+ 1057              		.section	.text.SystemClock_Config,"ax",%progbits
+ 1058              		.align	1
+ 1059              		.global	SystemClock_Config
+ 1060              		.syntax unified
+ 1061              		.code	16
+ 1062              		.thumb_func
+ 1064              	SystemClock_Config:
+ 1065              	.LFB315:
+ 203:Src/main.c    ****   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+ 1066              		.loc 1 203 1 view -0
+ 1067              		.cfi_startproc
+ 1068              		@ args = 0, pretend = 0, frame = 72
+ 1069              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1070 0000 00B5     		push	{lr}
+ 1071              	.LCFI12:
+ 1072              		.cfi_def_cfa_offset 4
+ 1073              		.cfi_offset 14, -4
+ 1074 0002 93B0     		sub	sp, sp, #76
+ 1075              	.LCFI13:
+ 1076              		.cfi_def_cfa_offset 80
+ 204:Src/main.c    ****   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 34
+
+
+ 1077              		.loc 1 204 3 view .LVU307
+ 204:Src/main.c    ****   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+ 1078              		.loc 1 204 22 is_stmt 0 view .LVU308
+ 1079 0004 3422     		movs	r2, #52
+ 1080 0006 0021     		movs	r1, #0
+ 1081 0008 05A8     		add	r0, sp, #20
+ 1082 000a FFF7FEFF 		bl	memset
+ 1083              	.LVL81:
+ 205:Src/main.c    **** 
+ 1084              		.loc 1 205 3 is_stmt 1 view .LVU309
+ 205:Src/main.c    **** 
+ 1085              		.loc 1 205 22 is_stmt 0 view .LVU310
+ 1086 000e 1022     		movs	r2, #16
+ 1087 0010 0021     		movs	r1, #0
+ 1088 0012 01A8     		add	r0, sp, #4
+ 1089 0014 FFF7FEFF 		bl	memset
+ 1090              	.LVL82:
+ 209:Src/main.c    **** 
+ 1091              		.loc 1 209 3 is_stmt 1 view .LVU311
+ 1092 0018 8020     		movs	r0, #128
+ 1093 001a 8000     		lsls	r0, r0, #2
+ 1094 001c FFF7FEFF 		bl	HAL_PWREx_ControlVoltageScaling
+ 1095              	.LVL83:
+ 214:Src/main.c    ****   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+ 1096              		.loc 1 214 3 view .LVU312
+ 214:Src/main.c    ****   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+ 1097              		.loc 1 214 36 is_stmt 0 view .LVU313
+ 1098 0020 0223     		movs	r3, #2
+ 1099 0022 0593     		str	r3, [sp, #20]
+ 215:Src/main.c    ****   RCC_OscInitStruct.HSIDiv = RCC_HSI_DIV1;
+ 1100              		.loc 1 215 3 is_stmt 1 view .LVU314
+ 215:Src/main.c    ****   RCC_OscInitStruct.HSIDiv = RCC_HSI_DIV1;
+ 1101              		.loc 1 215 30 is_stmt 0 view .LVU315
+ 1102 0024 FE33     		adds	r3, r3, #254
+ 1103 0026 0893     		str	r3, [sp, #32]
+ 216:Src/main.c    ****   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+ 1104              		.loc 1 216 3 is_stmt 1 view .LVU316
+ 216:Src/main.c    ****   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+ 1105              		.loc 1 216 28 is_stmt 0 view .LVU317
+ 1106 0028 0023     		movs	r3, #0
+ 1107 002a 0993     		str	r3, [sp, #36]
+ 217:Src/main.c    ****   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+ 1108              		.loc 1 217 3 is_stmt 1 view .LVU318
+ 217:Src/main.c    ****   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+ 1109              		.loc 1 217 41 is_stmt 0 view .LVU319
+ 1110 002c 4022     		movs	r2, #64
+ 1111 002e 0A92     		str	r2, [sp, #40]
+ 218:Src/main.c    ****   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+ 1112              		.loc 1 218 3 is_stmt 1 view .LVU320
+ 218:Src/main.c    ****   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+ 1113              		.loc 1 218 34 is_stmt 0 view .LVU321
+ 1114 0030 0C93     		str	r3, [sp, #48]
+ 219:Src/main.c    ****   {
+ 1115              		.loc 1 219 3 is_stmt 1 view .LVU322
+ 219:Src/main.c    ****   {
+ 1116              		.loc 1 219 7 is_stmt 0 view .LVU323
+ 1117 0032 05A8     		add	r0, sp, #20
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 35
+
+
+ 1118 0034 FFF7FEFF 		bl	HAL_RCC_OscConfig
+ 1119              	.LVL84:
+ 219:Src/main.c    ****   {
+ 1120              		.loc 1 219 6 view .LVU324
+ 1121 0038 0028     		cmp	r0, #0
+ 1122 003a 0DD1     		bne	.L74
+ 226:Src/main.c    ****                               |RCC_CLOCKTYPE_PCLK1;
+ 1123              		.loc 1 226 3 is_stmt 1 view .LVU325
+ 226:Src/main.c    ****                               |RCC_CLOCKTYPE_PCLK1;
+ 1124              		.loc 1 226 31 is_stmt 0 view .LVU326
+ 1125 003c 0723     		movs	r3, #7
+ 1126 003e 0193     		str	r3, [sp, #4]
+ 228:Src/main.c    ****   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+ 1127              		.loc 1 228 3 is_stmt 1 view .LVU327
+ 228:Src/main.c    ****   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+ 1128              		.loc 1 228 34 is_stmt 0 view .LVU328
+ 1129 0040 0023     		movs	r3, #0
+ 1130 0042 0293     		str	r3, [sp, #8]
+ 229:Src/main.c    ****   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+ 1131              		.loc 1 229 3 is_stmt 1 view .LVU329
+ 229:Src/main.c    ****   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+ 1132              		.loc 1 229 35 is_stmt 0 view .LVU330
+ 1133 0044 0393     		str	r3, [sp, #12]
+ 230:Src/main.c    **** 
+ 1134              		.loc 1 230 3 is_stmt 1 view .LVU331
+ 230:Src/main.c    **** 
+ 1135              		.loc 1 230 36 is_stmt 0 view .LVU332
+ 1136 0046 0493     		str	r3, [sp, #16]
+ 232:Src/main.c    ****   {
+ 1137              		.loc 1 232 3 is_stmt 1 view .LVU333
+ 232:Src/main.c    ****   {
+ 1138              		.loc 1 232 7 is_stmt 0 view .LVU334
+ 1139 0048 0021     		movs	r1, #0
+ 1140 004a 01A8     		add	r0, sp, #4
+ 1141 004c FFF7FEFF 		bl	HAL_RCC_ClockConfig
+ 1142              	.LVL85:
+ 232:Src/main.c    ****   {
+ 1143              		.loc 1 232 6 view .LVU335
+ 1144 0050 0028     		cmp	r0, #0
+ 1145 0052 03D1     		bne	.L75
+ 236:Src/main.c    **** 
+ 1146              		.loc 1 236 1 view .LVU336
+ 1147 0054 13B0     		add	sp, sp, #76
+ 1148              		@ sp needed
+ 1149 0056 00BD     		pop	{pc}
+ 1150              	.L74:
+ 221:Src/main.c    ****   }
+ 1151              		.loc 1 221 5 is_stmt 1 view .LVU337
+ 1152 0058 FFF7FEFF 		bl	Error_Handler
+ 1153              	.LVL86:
+ 1154              	.L75:
+ 234:Src/main.c    ****   }
+ 1155              		.loc 1 234 5 view .LVU338
+ 1156 005c FFF7FEFF 		bl	Error_Handler
+ 1157              	.LVL87:
+ 1158              		.cfi_endproc
+ 1159              	.LFE315:
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 36
+
+
+ 1161              		.section	.text.main,"ax",%progbits
+ 1162              		.align	1
+ 1163              		.global	main
+ 1164              		.syntax unified
+ 1165              		.code	16
+ 1166              		.thumb_func
+ 1168              	main:
+ 1169              	.LFB314:
+ 101:Src/main.c    ****   /* USER CODE BEGIN 1 */
+ 1170              		.loc 1 101 1 view -0
+ 1171              		.cfi_startproc
+ 1172              		@ args = 0, pretend = 0, frame = 0
+ 1173              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1174 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 1175              	.LCFI14:
+ 1176              		.cfi_def_cfa_offset 24
+ 1177              		.cfi_offset 3, -24
+ 1178              		.cfi_offset 4, -20
+ 1179              		.cfi_offset 5, -16
+ 1180              		.cfi_offset 6, -12
+ 1181              		.cfi_offset 7, -8
+ 1182              		.cfi_offset 14, -4
+ 109:Src/main.c    **** 
+ 1183              		.loc 1 109 3 view .LVU340
+ 1184 0002 FFF7FEFF 		bl	HAL_Init
+ 1185              	.LVL88:
+ 116:Src/main.c    **** 
+ 1186              		.loc 1 116 3 view .LVU341
+ 1187 0006 FFF7FEFF 		bl	SystemClock_Config
+ 1188              	.LVL89:
+ 123:Src/main.c    ****   MX_USART1_UART_Init();
+ 1189              		.loc 1 123 3 view .LVU342
+ 1190 000a FFF7FEFF 		bl	MX_GPIO_Init
+ 1191              	.LVL90:
+ 124:Src/main.c    ****   MX_TIM3_Init();
+ 1192              		.loc 1 124 3 view .LVU343
+ 1193 000e FFF7FEFF 		bl	MX_USART1_UART_Init
+ 1194              	.LVL91:
+ 125:Src/main.c    ****   /* USER CODE BEGIN 2 */
+ 1195              		.loc 1 125 3 view .LVU344
+ 1196 0012 FFF7FEFF 		bl	MX_TIM3_Init
+ 1197              	.LVL92:
+ 127:Src/main.c    ****   HAL_UART_Receive_IT(&huart1, &rx_dataChar, 1); 
+ 1198              		.loc 1 127 3 view .LVU345
+ 1199 0016 5948     		ldr	r0, .L95
+ 1200 0018 FFF7FEFF 		bl	HAL_TIM_Base_Start
+ 1201              	.LVL93:
+ 128:Src/main.c    ****   uint8_t preset_sensor_1 = 0;
+ 1202              		.loc 1 128 3 view .LVU346
+ 1203 001c 0122     		movs	r2, #1
+ 1204 001e 5849     		ldr	r1, .L95+4
+ 1205 0020 5848     		ldr	r0, .L95+8
+ 1206 0022 FFF7FEFF 		bl	HAL_UART_Receive_IT
+ 1207              	.LVL94:
+ 129:Src/main.c    ****   uint8_t preset_sensor_2 = 0;
+ 1208              		.loc 1 129 3 view .LVU347
+ 130:Src/main.c    ****   uint8_t preset_sensor_3 = 0; 
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 37
+
+
+ 1209              		.loc 1 130 3 view .LVU348
+ 131:Src/main.c    ****   /* USER CODE END 2 */
+ 1210              		.loc 1 131 3 view .LVU349
+ 131:Src/main.c    ****   /* USER CODE END 2 */
+ 1211              		.loc 1 131 11 is_stmt 0 view .LVU350
+ 1212 0026 0026     		movs	r6, #0
+ 130:Src/main.c    ****   uint8_t preset_sensor_3 = 0; 
+ 1213              		.loc 1 130 11 view .LVU351
+ 1214 0028 0025     		movs	r5, #0
+ 129:Src/main.c    ****   uint8_t preset_sensor_2 = 0;
+ 1215              		.loc 1 129 11 view .LVU352
+ 1216 002a 0024     		movs	r4, #0
+ 1217 002c 5FE0     		b	.L77
+ 1218              	.LVL95:
+ 1219              	.L89:
+ 140:Src/main.c    ****       if(HAL_GPIO_ReadPin(Input_Sensor_01_GPIO_Port, Input_Sensor_01_Pin) == GPIO_PIN_RESET) preset
+ 1220              		.loc 1 140 7 is_stmt 1 view .LVU353
+ 1221 002e 0A30     		adds	r0, r0, #10
+ 1222 0030 FFF7FEFF 		bl	HAL_Delay
+ 1223              	.LVL96:
+ 141:Src/main.c    ****     }
+ 1224              		.loc 1 141 7 view .LVU354
+ 141:Src/main.c    ****     }
+ 1225              		.loc 1 141 10 is_stmt 0 view .LVU355
+ 1226 0034 8021     		movs	r1, #128
+ 1227 0036 A020     		movs	r0, #160
+ 1228 0038 4900     		lsls	r1, r1, #1
+ 1229 003a C005     		lsls	r0, r0, #23
+ 1230 003c FFF7FEFF 		bl	HAL_GPIO_ReadPin
+ 1231              	.LVL97:
+ 141:Src/main.c    ****     }
+ 1232              		.loc 1 141 9 view .LVU356
+ 1233 0040 0028     		cmp	r0, #0
+ 1234 0042 5CD1     		bne	.L78
+ 141:Src/main.c    ****     }
+ 1235              		.loc 1 141 110 view .LVU357
+ 1236 0044 0124     		movs	r4, #1
+ 1237              	.LVL98:
+ 141:Src/main.c    ****     }
+ 1238              		.loc 1 141 110 view .LVU358
+ 1239 0046 5AE0     		b	.L78
+ 1240              	.LVL99:
+ 1241              	.L90:
+ 143:Src/main.c    ****     {
+ 1242              		.loc 1 143 91 discriminator 1 view .LVU359
+ 1243 0048 012C     		cmp	r4, #1
+ 1244 004a 60D1     		bne	.L79
+ 145:Src/main.c    ****       if(HAL_GPIO_ReadPin(Input_Sensor_01_GPIO_Port, Input_Sensor_01_Pin) == GPIO_PIN_SET) 
+ 1245              		.loc 1 145 7 is_stmt 1 view .LVU360
+ 1246 004c 0930     		adds	r0, r0, #9
+ 1247 004e FFF7FEFF 		bl	HAL_Delay
+ 1248              	.LVL100:
+ 146:Src/main.c    ****       {
+ 1249              		.loc 1 146 7 view .LVU361
+ 146:Src/main.c    ****       {
+ 1250              		.loc 1 146 10 is_stmt 0 view .LVU362
+ 1251 0052 8021     		movs	r1, #128
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 38
+
+
+ 1252 0054 A020     		movs	r0, #160
+ 1253 0056 4900     		lsls	r1, r1, #1
+ 1254 0058 C005     		lsls	r0, r0, #23
+ 1255 005a FFF7FEFF 		bl	HAL_GPIO_ReadPin
+ 1256              	.LVL101:
+ 146:Src/main.c    ****       {
+ 1257              		.loc 1 146 9 view .LVU363
+ 1258 005e 0128     		cmp	r0, #1
+ 1259 0060 55D1     		bne	.L79
+ 148:Src/main.c    ****         countingStatusInput1++;  
+ 1260              		.loc 1 148 9 is_stmt 1 view .LVU364
+ 1261              	.LVL102:
+ 149:Src/main.c    ****       }
+ 1262              		.loc 1 149 9 view .LVU365
+ 149:Src/main.c    ****       }
+ 1263              		.loc 1 149 29 is_stmt 0 view .LVU366
+ 1264 0062 494A     		ldr	r2, .L95+12
+ 1265 0064 1388     		ldrh	r3, [r2]
+ 1266 0066 0133     		adds	r3, r3, #1
+ 1267 0068 1380     		strh	r3, [r2]
+ 148:Src/main.c    ****         countingStatusInput1++;  
+ 1268              		.loc 1 148 25 view .LVU367
+ 1269 006a 0024     		movs	r4, #0
+ 1270 006c 4FE0     		b	.L79
+ 1271              	.LVL103:
+ 1272              	.L91:
+ 155:Src/main.c    ****       if(HAL_GPIO_ReadPin(Input_Sensor_02_GPIO_Port, Input_Sensor_02_Pin) == GPIO_PIN_RESET) preset
+ 1273              		.loc 1 155 7 is_stmt 1 view .LVU368
+ 1274 006e 0A30     		adds	r0, r0, #10
+ 1275 0070 FFF7FEFF 		bl	HAL_Delay
+ 1276              	.LVL104:
+ 156:Src/main.c    ****     }
+ 1277              		.loc 1 156 7 view .LVU369
+ 156:Src/main.c    ****     }
+ 1278              		.loc 1 156 10 is_stmt 0 view .LVU370
+ 1279 0074 8021     		movs	r1, #128
+ 1280 0076 0902     		lsls	r1, r1, #8
+ 1281 0078 4448     		ldr	r0, .L95+16
+ 1282 007a FFF7FEFF 		bl	HAL_GPIO_ReadPin
+ 1283              	.LVL105:
+ 156:Src/main.c    ****     }
+ 1284              		.loc 1 156 9 view .LVU371
+ 1285 007e 0028     		cmp	r0, #0
+ 1286 0080 4CD1     		bne	.L80
+ 156:Src/main.c    ****     }
+ 1287              		.loc 1 156 110 view .LVU372
+ 1288 0082 0125     		movs	r5, #1
+ 1289              	.LVL106:
+ 156:Src/main.c    ****     }
+ 1290              		.loc 1 156 110 view .LVU373
+ 1291 0084 4AE0     		b	.L80
+ 1292              	.LVL107:
+ 1293              	.L92:
+ 158:Src/main.c    ****     {
+ 1294              		.loc 1 158 91 discriminator 1 view .LVU374
+ 1295 0086 012D     		cmp	r5, #1
+ 1296 0088 4FD1     		bne	.L81
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 39
+
+
+ 160:Src/main.c    ****       if(HAL_GPIO_ReadPin(Input_Sensor_02_GPIO_Port, Input_Sensor_02_Pin) == GPIO_PIN_SET) 
+ 1297              		.loc 1 160 7 is_stmt 1 view .LVU375
+ 1298 008a 0930     		adds	r0, r0, #9
+ 1299 008c FFF7FEFF 		bl	HAL_Delay
+ 1300              	.LVL108:
+ 161:Src/main.c    ****       {
+ 1301              		.loc 1 161 7 view .LVU376
+ 161:Src/main.c    ****       {
+ 1302              		.loc 1 161 10 is_stmt 0 view .LVU377
+ 1303 0090 8021     		movs	r1, #128
+ 1304 0092 0902     		lsls	r1, r1, #8
+ 1305 0094 3D48     		ldr	r0, .L95+16
+ 1306 0096 FFF7FEFF 		bl	HAL_GPIO_ReadPin
+ 1307              	.LVL109:
+ 161:Src/main.c    ****       {
+ 1308              		.loc 1 161 9 view .LVU378
+ 1309 009a 0128     		cmp	r0, #1
+ 1310 009c 45D1     		bne	.L81
+ 163:Src/main.c    ****         countingStatusInput2++;  
+ 1311              		.loc 1 163 9 is_stmt 1 view .LVU379
+ 1312              	.LVL110:
+ 164:Src/main.c    ****       }
+ 1313              		.loc 1 164 9 view .LVU380
+ 164:Src/main.c    ****       }
+ 1314              		.loc 1 164 29 is_stmt 0 view .LVU381
+ 1315 009e 3C4A     		ldr	r2, .L95+20
+ 1316 00a0 1388     		ldrh	r3, [r2]
+ 1317 00a2 0133     		adds	r3, r3, #1
+ 1318 00a4 1380     		strh	r3, [r2]
+ 163:Src/main.c    ****         countingStatusInput2++;  
+ 1319              		.loc 1 163 25 view .LVU382
+ 1320 00a6 0025     		movs	r5, #0
+ 1321 00a8 3FE0     		b	.L81
+ 1322              	.LVL111:
+ 1323              	.L93:
+ 170:Src/main.c    ****       if(HAL_GPIO_ReadPin(Input_Sensor_03_GPIO_Port, Input_Sensor_03_Pin) == GPIO_PIN_RESET) preset
+ 1324              		.loc 1 170 7 is_stmt 1 view .LVU383
+ 1325 00aa 0A30     		adds	r0, r0, #10
+ 1326 00ac FFF7FEFF 		bl	HAL_Delay
+ 1327              	.LVL112:
+ 171:Src/main.c    ****     } 
+ 1328              		.loc 1 171 7 view .LVU384
+ 171:Src/main.c    ****     } 
+ 1329              		.loc 1 171 10 is_stmt 0 view .LVU385
+ 1330 00b0 8021     		movs	r1, #128
+ 1331 00b2 C901     		lsls	r1, r1, #7
+ 1332 00b4 3548     		ldr	r0, .L95+16
+ 1333 00b6 FFF7FEFF 		bl	HAL_GPIO_ReadPin
+ 1334              	.LVL113:
+ 171:Src/main.c    ****     } 
+ 1335              		.loc 1 171 9 view .LVU386
+ 1336 00ba 0028     		cmp	r0, #0
+ 1337 00bc 3CD1     		bne	.L82
+ 171:Src/main.c    ****     } 
+ 1338              		.loc 1 171 110 view .LVU387
+ 1339 00be 0126     		movs	r6, #1
+ 1340              	.LVL114:
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 40
+
+
+ 171:Src/main.c    ****     } 
+ 1341              		.loc 1 171 110 view .LVU388
+ 1342 00c0 3AE0     		b	.L82
+ 1343              	.LVL115:
+ 1344              	.L94:
+ 173:Src/main.c    ****     {
+ 1345              		.loc 1 173 91 discriminator 1 view .LVU389
+ 1346 00c2 012E     		cmp	r6, #1
+ 1347 00c4 3FD1     		bne	.L83
+ 175:Src/main.c    ****       if(HAL_GPIO_ReadPin(Input_Sensor_03_GPIO_Port, Input_Sensor_03_Pin) == GPIO_PIN_SET)
+ 1348              		.loc 1 175 7 is_stmt 1 view .LVU390
+ 1349 00c6 0930     		adds	r0, r0, #9
+ 1350 00c8 FFF7FEFF 		bl	HAL_Delay
+ 1351              	.LVL116:
+ 176:Src/main.c    ****       {
+ 1352              		.loc 1 176 7 view .LVU391
+ 176:Src/main.c    ****       {
+ 1353              		.loc 1 176 10 is_stmt 0 view .LVU392
+ 1354 00cc 8021     		movs	r1, #128
+ 1355 00ce C901     		lsls	r1, r1, #7
+ 1356 00d0 2E48     		ldr	r0, .L95+16
+ 1357 00d2 FFF7FEFF 		bl	HAL_GPIO_ReadPin
+ 1358              	.LVL117:
+ 176:Src/main.c    ****       {
+ 1359              		.loc 1 176 9 view .LVU393
+ 1360 00d6 0128     		cmp	r0, #1
+ 1361 00d8 35D1     		bne	.L83
+ 178:Src/main.c    ****         countingStatusInput3++; 
+ 1362              		.loc 1 178 9 is_stmt 1 view .LVU394
+ 1363              	.LVL118:
+ 179:Src/main.c    ****       }
+ 1364              		.loc 1 179 9 view .LVU395
+ 179:Src/main.c    ****       }
+ 1365              		.loc 1 179 29 is_stmt 0 view .LVU396
+ 1366 00da 2E4A     		ldr	r2, .L95+24
+ 1367 00dc 1388     		ldrh	r3, [r2]
+ 1368 00de 0133     		adds	r3, r3, #1
+ 1369 00e0 1380     		strh	r3, [r2]
+ 178:Src/main.c    ****         countingStatusInput3++; 
+ 1370              		.loc 1 178 25 view .LVU397
+ 1371 00e2 0026     		movs	r6, #0
+ 1372 00e4 2FE0     		b	.L83
+ 1373              	.LVL119:
+ 1374              	.L85:
+ 189:Src/main.c    ****     }
+ 1375              		.loc 1 189 7 is_stmt 1 view .LVU398
+ 1376 00e6 3221     		movs	r1, #50
+ 1377 00e8 2B48     		ldr	r0, .L95+28
+ 1378 00ea FFF7FEFF 		bl	clearUart
+ 1379              	.LVL120:
+ 1380              	.L77:
+ 136:Src/main.c    ****   {
+ 1381              		.loc 1 136 3 view .LVU399
+ 138:Src/main.c    ****     {
+ 1382              		.loc 1 138 5 view .LVU400
+ 138:Src/main.c    ****     {
+ 1383              		.loc 1 138 8 is_stmt 0 view .LVU401
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 41
+
+
+ 1384 00ee 8021     		movs	r1, #128
+ 1385 00f0 A020     		movs	r0, #160
+ 1386 00f2 4900     		lsls	r1, r1, #1
+ 1387 00f4 C005     		lsls	r0, r0, #23
+ 1388 00f6 FFF7FEFF 		bl	HAL_GPIO_ReadPin
+ 1389              	.LVL121:
+ 138:Src/main.c    ****     {
+ 1390              		.loc 1 138 7 view .LVU402
+ 1391 00fa 0028     		cmp	r0, #0
+ 1392 00fc 97D0     		beq	.L89
+ 1393              	.LVL122:
+ 1394              	.L78:
+ 143:Src/main.c    ****     {
+ 1395              		.loc 1 143 5 is_stmt 1 view .LVU403
+ 143:Src/main.c    ****     {
+ 1396              		.loc 1 143 9 is_stmt 0 view .LVU404
+ 1397 00fe 8021     		movs	r1, #128
+ 1398 0100 A020     		movs	r0, #160
+ 1399 0102 4900     		lsls	r1, r1, #1
+ 1400 0104 C005     		lsls	r0, r0, #23
+ 1401 0106 FFF7FEFF 		bl	HAL_GPIO_ReadPin
+ 1402              	.LVL123:
+ 143:Src/main.c    ****     {
+ 1403              		.loc 1 143 7 view .LVU405
+ 1404 010a 0128     		cmp	r0, #1
+ 1405 010c 9CD0     		beq	.L90
+ 1406              	.LVL124:
+ 1407              	.L79:
+ 153:Src/main.c    ****     {
+ 1408              		.loc 1 153 5 is_stmt 1 view .LVU406
+ 153:Src/main.c    ****     {
+ 1409              		.loc 1 153 8 is_stmt 0 view .LVU407
+ 1410 010e 8021     		movs	r1, #128
+ 1411 0110 0902     		lsls	r1, r1, #8
+ 1412 0112 1E48     		ldr	r0, .L95+16
+ 1413 0114 FFF7FEFF 		bl	HAL_GPIO_ReadPin
+ 1414              	.LVL125:
+ 153:Src/main.c    ****     {
+ 1415              		.loc 1 153 7 view .LVU408
+ 1416 0118 0028     		cmp	r0, #0
+ 1417 011a A8D0     		beq	.L91
+ 1418              	.LVL126:
+ 1419              	.L80:
+ 158:Src/main.c    ****     {
+ 1420              		.loc 1 158 5 is_stmt 1 view .LVU409
+ 158:Src/main.c    ****     {
+ 1421              		.loc 1 158 9 is_stmt 0 view .LVU410
+ 1422 011c 8021     		movs	r1, #128
+ 1423 011e 0902     		lsls	r1, r1, #8
+ 1424 0120 1A48     		ldr	r0, .L95+16
+ 1425 0122 FFF7FEFF 		bl	HAL_GPIO_ReadPin
+ 1426              	.LVL127:
+ 158:Src/main.c    ****     {
+ 1427              		.loc 1 158 7 view .LVU411
+ 1428 0126 0128     		cmp	r0, #1
+ 1429 0128 ADD0     		beq	.L92
+ 1430              	.LVL128:
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 42
+
+
+ 1431              	.L81:
+ 168:Src/main.c    ****     {  
+ 1432              		.loc 1 168 5 is_stmt 1 view .LVU412
+ 168:Src/main.c    ****     {  
+ 1433              		.loc 1 168 8 is_stmt 0 view .LVU413
+ 1434 012a 8021     		movs	r1, #128
+ 1435 012c C901     		lsls	r1, r1, #7
+ 1436 012e 1748     		ldr	r0, .L95+16
+ 1437 0130 FFF7FEFF 		bl	HAL_GPIO_ReadPin
+ 1438              	.LVL129:
+ 168:Src/main.c    ****     {  
+ 1439              		.loc 1 168 7 view .LVU414
+ 1440 0134 0028     		cmp	r0, #0
+ 1441 0136 B8D0     		beq	.L93
+ 1442              	.LVL130:
+ 1443              	.L82:
+ 173:Src/main.c    ****     {
+ 1444              		.loc 1 173 5 is_stmt 1 view .LVU415
+ 173:Src/main.c    ****     {
+ 1445              		.loc 1 173 9 is_stmt 0 view .LVU416
+ 1446 0138 8021     		movs	r1, #128
+ 1447 013a C901     		lsls	r1, r1, #7
+ 1448 013c 1348     		ldr	r0, .L95+16
+ 1449 013e FFF7FEFF 		bl	HAL_GPIO_ReadPin
+ 1450              	.LVL131:
+ 173:Src/main.c    ****     {
+ 1451              		.loc 1 173 7 view .LVU417
+ 1452 0142 0128     		cmp	r0, #1
+ 1453 0144 BDD0     		beq	.L94
+ 1454              	.LVL132:
+ 1455              	.L83:
+ 183:Src/main.c    ****     {
+ 1456              		.loc 1 183 5 is_stmt 1 view .LVU418
+ 183:Src/main.c    ****     {
+ 1457              		.loc 1 183 8 is_stmt 0 view .LVU419
+ 1458 0146 0D4B     		ldr	r3, .L95
+ 1459 0148 1B68     		ldr	r3, [r3]
+ 1460 014a 5A6A     		ldr	r2, [r3, #36]
+ 183:Src/main.c    ****     {
+ 1461              		.loc 1 183 7 view .LVU420
+ 1462 014c 052A     		cmp	r2, #5
+ 1463 014e CED9     		bls	.L77
+ 185:Src/main.c    ****       HAL_TIM_Base_Stop(&htim3);
+ 1464              		.loc 1 185 7 is_stmt 1 view .LVU421
+ 1465 0150 0027     		movs	r7, #0
+ 1466 0152 5F62     		str	r7, [r3, #36]
+ 186:Src/main.c    ****       buffComming = 0; 
+ 1467              		.loc 1 186 7 view .LVU422
+ 1468 0154 0948     		ldr	r0, .L95
+ 1469 0156 FFF7FEFF 		bl	HAL_TIM_Base_Stop
+ 1470              	.LVL133:
+ 187:Src/main.c    ****       if(CRC_MODBUS(rx_data, rx_count) && rx_data[0]==0x02) ModbusTransHandle(); 
+ 1471              		.loc 1 187 7 view .LVU423
+ 187:Src/main.c    ****       if(CRC_MODBUS(rx_data, rx_count) && rx_data[0]==0x02) ModbusTransHandle(); 
+ 1472              		.loc 1 187 19 is_stmt 0 view .LVU424
+ 1473 015a 104B     		ldr	r3, .L95+32
+ 1474 015c 1F70     		strb	r7, [r3]
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 43
+
+
+ 188:Src/main.c    ****       clearUart(rx_data, uartBytes); 
+ 1475              		.loc 1 188 7 is_stmt 1 view .LVU425
+ 188:Src/main.c    ****       clearUart(rx_data, uartBytes); 
+ 1476              		.loc 1 188 10 is_stmt 0 view .LVU426
+ 1477 015e 104B     		ldr	r3, .L95+36
+ 1478 0160 1978     		ldrb	r1, [r3]
+ 1479 0162 0D48     		ldr	r0, .L95+28
+ 1480 0164 FFF7FEFF 		bl	CRC_MODBUS
+ 1481              	.LVL134:
+ 188:Src/main.c    ****       clearUart(rx_data, uartBytes); 
+ 1482              		.loc 1 188 9 view .LVU427
+ 1483 0168 0028     		cmp	r0, #0
+ 1484 016a BCD0     		beq	.L85
+ 188:Src/main.c    ****       clearUart(rx_data, uartBytes); 
+ 1485              		.loc 1 188 50 discriminator 1 view .LVU428
+ 1486 016c 0A4B     		ldr	r3, .L95+28
+ 1487 016e 1B78     		ldrb	r3, [r3]
+ 188:Src/main.c    ****       clearUart(rx_data, uartBytes); 
+ 1488              		.loc 1 188 40 discriminator 1 view .LVU429
+ 1489 0170 022B     		cmp	r3, #2
+ 1490 0172 B8D1     		bne	.L85
+ 188:Src/main.c    ****       clearUart(rx_data, uartBytes); 
+ 1491              		.loc 1 188 61 is_stmt 1 discriminator 2 view .LVU430
+ 1492 0174 FFF7FEFF 		bl	ModbusTransHandle
+ 1493              	.LVL135:
+ 1494 0178 B5E7     		b	.L85
+ 1495              	.L96:
+ 1496 017a C046     		.align	2
+ 1497              	.L95:
+ 1498 017c 00000000 		.word	.LANCHOR1
+ 1499 0180 00000000 		.word	.LANCHOR2
+ 1500 0184 00000000 		.word	huart1
+ 1501 0188 00000000 		.word	.LANCHOR6
+ 1502 018c 00040050 		.word	1342178304
+ 1503 0190 00000000 		.word	.LANCHOR7
+ 1504 0194 00000000 		.word	.LANCHOR8
+ 1505 0198 00000000 		.word	.LANCHOR4
+ 1506 019c 00000000 		.word	.LANCHOR0
+ 1507 01a0 00000000 		.word	.LANCHOR3
+ 1508              		.cfi_endproc
+ 1509              	.LFE314:
+ 1511              		.global	debug
+ 1512              		.global	checkSumCRC
+ 1513              		.global	countingStatusInput3
+ 1514              		.global	countingStatusInput2
+ 1515              		.global	countingStatusInput1
+ 1516              		.global	rx_count
+ 1517              		.global	rx_dataChar
+ 1518              		.global	tx_data
+ 1519              		.global	rx_data
+ 1520              		.global	buffComming
+ 1521              		.global	huart1
+ 1522              		.global	htim3
+ 1523              		.section	.bss.buffComming,"aw",%nobits
+ 1524              		.set	.LANCHOR0,. + 0
+ 1527              	buffComming:
+ 1528 0000 00       		.space	1
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 44
+
+
+ 1529              		.section	.bss.checkSumCRC,"aw",%nobits
+ 1530              		.align	2
+ 1531              		.set	.LANCHOR9,. + 0
+ 1534              	checkSumCRC:
+ 1535 0000 0000     		.space	2
+ 1536              		.section	.bss.countingStatusInput1,"aw",%nobits
+ 1537              		.align	1
+ 1538              		.set	.LANCHOR6,. + 0
+ 1541              	countingStatusInput1:
+ 1542 0000 0000     		.space	2
+ 1543              		.section	.bss.countingStatusInput2,"aw",%nobits
+ 1544              		.align	1
+ 1545              		.set	.LANCHOR7,. + 0
+ 1548              	countingStatusInput2:
+ 1549 0000 0000     		.space	2
+ 1550              		.section	.bss.countingStatusInput3,"aw",%nobits
+ 1551              		.align	1
+ 1552              		.set	.LANCHOR8,. + 0
+ 1555              	countingStatusInput3:
+ 1556 0000 0000     		.space	2
+ 1557              		.section	.bss.debug,"aw",%nobits
+ 1560              	debug:
+ 1561 0000 00       		.space	1
+ 1562              		.section	.bss.htim3,"aw",%nobits
+ 1563              		.align	2
+ 1564              		.set	.LANCHOR1,. + 0
+ 1567              	htim3:
+ 1568 0000 00000000 		.space	76
+ 1568      00000000 
+ 1568      00000000 
+ 1568      00000000 
+ 1568      00000000 
+ 1569              		.section	.bss.huart1,"aw",%nobits
+ 1570              		.align	2
+ 1573              	huart1:
+ 1574 0000 00000000 		.space	148
+ 1574      00000000 
+ 1574      00000000 
+ 1574      00000000 
+ 1574      00000000 
+ 1575              		.section	.bss.rx_count,"aw",%nobits
+ 1576              		.align	1
+ 1577              		.set	.LANCHOR3,. + 0
+ 1580              	rx_count:
+ 1581 0000 0000     		.space	2
+ 1582              		.section	.bss.rx_data,"aw",%nobits
+ 1583              		.align	2
+ 1584              		.set	.LANCHOR4,. + 0
+ 1587              	rx_data:
+ 1588 0000 00000000 		.space	50
+ 1588      00000000 
+ 1588      00000000 
+ 1588      00000000 
+ 1588      00000000 
+ 1589              		.section	.bss.rx_dataChar,"aw",%nobits
+ 1590              		.set	.LANCHOR2,. + 0
+ 1593              	rx_dataChar:
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 45
+
+
+ 1594 0000 00       		.space	1
+ 1595              		.section	.bss.tx_data,"aw",%nobits
+ 1596              		.align	2
+ 1597              		.set	.LANCHOR5,. + 0
+ 1600              	tx_data:
+ 1601 0000 00000000 		.space	50
+ 1601      00000000 
+ 1601      00000000 
+ 1601      00000000 
+ 1601      00000000 
+ 1602              		.text
+ 1603              	.Letext0:
+ 1604              		.file 3 "c:\\gcc_arm\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 1605              		.file 4 "c:\\gcc_arm\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 1606              		.file 5 "Drivers/CMSIS/Device/ST/STM32G0xx/Include/stm32g070xx.h"
+ 1607              		.file 6 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_def.h"
+ 1608              		.file 7 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_rcc.h"
+ 1609              		.file 8 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_gpio.h"
+ 1610              		.file 9 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_dma.h"
+ 1611              		.file 10 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_tim.h"
+ 1612              		.file 11 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_uart.h"
+ 1613              		.file 12 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_dma.h"
+ 1614              		.file 13 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_uart_ex.h"
+ 1615              		.file 14 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_tim_ex.h"
+ 1616              		.file 15 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_pwr_ex.h"
+ 1617              		.file 16 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal.h"
+ 1618              		.file 17 "<built-in>"
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 46
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:18     .text.MX_GPIO_Init:00000000 $t
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:23     .text.MX_GPIO_Init:00000000 MX_GPIO_Init
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:117    .text.MX_GPIO_Init:0000005c $d
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:123    .text.HAL_UART_RxCpltCallback:00000000 $t
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:129    .text.HAL_UART_RxCpltCallback:00000000 HAL_UART_RxCpltCallback
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:209    .text.HAL_UART_RxCpltCallback:00000048 $d
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:1573   .bss.huart1:00000000 huart1
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:220    .text.clearUart:00000000 $t
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:226    .text.clearUart:00000000 clearUart
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:283    .text.clearUart:00000024 $d
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:289    .text.appendString:00000000 $t
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:295    .text.appendString:00000000 appendString
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:371    .text.Calc_CRC16:00000000 $t
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:377    .text.Calc_CRC16:00000000 Calc_CRC16
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:495    .text.Calc_CRC16:00000040 $d
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:501    .text.CRC_MODBUS:00000000 $t
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:507    .text.CRC_MODBUS:00000000 CRC_MODBUS
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:674    .text.CRC_MODBUS:00000070 $d
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:680    .text.ModbusTransHandle:00000000 $t
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:686    .text.ModbusTransHandle:00000000 ModbusTransHandle
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:774    .text.ModbusTransHandle:00000058 $d
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:784    .text.Error_Handler:00000000 $t
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:790    .text.Error_Handler:00000000 Error_Handler
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:822    .text.MX_USART1_UART_Init:00000000 $t
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:827    .text.MX_USART1_UART_Init:00000000 MX_USART1_UART_Init
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:932    .text.MX_USART1_UART_Init:00000060 $d
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:938    .text.MX_TIM3_Init:00000000 $t
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:943    .text.MX_TIM3_Init:00000000 MX_TIM3_Init
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:1051   .text.MX_TIM3_Init:00000070 $d
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:1058   .text.SystemClock_Config:00000000 $t
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:1064   .text.SystemClock_Config:00000000 SystemClock_Config
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:1162   .text.main:00000000 $t
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:1168   .text.main:00000000 main
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:1498   .text.main:0000017c $d
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:1560   .bss.debug:00000000 debug
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:1534   .bss.checkSumCRC:00000000 checkSumCRC
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:1555   .bss.countingStatusInput3:00000000 countingStatusInput3
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:1548   .bss.countingStatusInput2:00000000 countingStatusInput2
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:1541   .bss.countingStatusInput1:00000000 countingStatusInput1
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:1580   .bss.rx_count:00000000 rx_count
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:1593   .bss.rx_dataChar:00000000 rx_dataChar
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:1600   .bss.tx_data:00000000 tx_data
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:1587   .bss.rx_data:00000000 rx_data
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:1527   .bss.buffComming:00000000 buffComming
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:1567   .bss.htim3:00000000 htim3
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:1528   .bss.buffComming:00000000 $d
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:1530   .bss.checkSumCRC:00000000 $d
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:1537   .bss.countingStatusInput1:00000000 $d
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:1544   .bss.countingStatusInput2:00000000 $d
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:1551   .bss.countingStatusInput3:00000000 $d
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:1561   .bss.debug:00000000 $d
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:1563   .bss.htim3:00000000 $d
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:1570   .bss.huart1:00000000 $d
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:1576   .bss.rx_count:00000000 $d
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:1583   .bss.rx_data:00000000 $d
+ARM GAS  C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s 			page 47
+
+
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:1594   .bss.rx_dataChar:00000000 $d
+C:\Users\thinhnnh\AppData\Local\Temp\ccO4ThOZ.s:1596   .bss.tx_data:00000000 $d
+
+UNDEFINED SYMBOLS
+memset
+HAL_GPIO_Init
+HAL_UART_Receive_IT
+HAL_TIM_Base_Start
+HAL_UART_Transmit
+HAL_UART_Init
+HAL_UARTEx_SetTxFifoThreshold
+HAL_UARTEx_SetRxFifoThreshold
+HAL_UARTEx_DisableFifoMode
+HAL_TIM_Base_Init
+HAL_TIM_ConfigClockSource
+HAL_TIMEx_MasterConfigSynchronization
+HAL_PWREx_ControlVoltageScaling
+HAL_RCC_OscConfig
+HAL_RCC_ClockConfig
+HAL_Init
+HAL_Delay
+HAL_GPIO_ReadPin
+HAL_TIM_Base_Stop

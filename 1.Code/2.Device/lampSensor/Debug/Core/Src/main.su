@@ -1,0 +1,15 @@
+../Core/Src/main.c:99:5:main	8	static
+../Core/Src/main.c:182:6:SystemClock_Config	88	static
+../Core/Src/main.c:223:13:MX_ADC1_Init	24	static
+../Core/Src/main.c:281:13:MX_TIM15_Init	40	static
+../Core/Src/main.c:327:13:MX_TIM16_Init	8	static
+../Core/Src/main.c:359:13:MX_TIM17_Init	8	static
+../Core/Src/main.c:391:13:MX_USART1_UART_Init	8	static
+../Core/Src/main.c:439:13:MX_GPIO_Init	16	static
+../Core/Src/main.c:448:6:checkLampStatus	40	static
+../Core/Src/main.c:494:6:HAL_UART_RxCpltCallback	16	static
+../Core/Src/main.c:507:6:clearRx	16	static
+../Core/Src/main.c:515:9:CRC_MODBUS	24	static
+../Core/Src/main.c:537:6:Calc_CRC16	32	static
+../Core/Src/main.c:555:6:modbusTransHandle	16	static
+../Core/Src/main.c:585:6:Error_Handler	8	static,ignoring_inline_asm
