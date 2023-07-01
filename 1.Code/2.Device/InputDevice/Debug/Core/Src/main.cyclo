@@ -1,0 +1,12 @@
+main.c:76:6:HAL_UART_RxCpltCallback	3
+main.c:100:5:main	10
+main.c:225:6:SystemClock_Config	3
+main.c:266:13:MX_TIM3_Init	4
+main.c:311:13:MX_USART1_UART_Init	5
+main.c:359:13:MX_GPIO_Init	1
+main.c:386:6:clearUart	3
+main.c:393:6:appendString	2
+main.c:404:6:Calc_CRC16	4
+main.c:422:9:CRC_MODBUS	6
+main.c:444:6:ModbusTransHandle	1
+main.c:471:6:Error_Handler	1

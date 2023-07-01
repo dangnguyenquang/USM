@@ -1,0 +1,27 @@
+17:57:33 **** Incremental Build of configuration Debug for project InputDevice ****
+make -j4 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m0plus -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32G070xx -c -I../Core/Inc -I../Drivers/STM32G0xx_HAL_Driver/Inc -I../Drivers/STM32G0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32G0xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:131:11: warning: unused variable 'preset_sensor_3' [-Wunused-variable]
+  131 |   uint8_t preset_sensor_3 = 0;
+      |           ^~~~~~~~~~~~~~~
+../Core/Src/main.c:130:11: warning: unused variable 'preset_sensor_2' [-Wunused-variable]
+  130 |   uint8_t preset_sensor_2 = 0;
+      |           ^~~~~~~~~~~~~~~
+../Core/Src/main.c:129:11: warning: unused variable 'preset_sensor_1' [-Wunused-variable]
+  129 |   uint8_t preset_sensor_1 = 0;
+      |           ^~~~~~~~~~~~~~~
+arm-none-eabi-gcc -o "InputDevice.elf" @"objects.list"   -mcpu=cortex-m0plus -T"C:\Users\Huy Le\Desktop\Dang\USM\1.Code\2.Device\InputDevice\STM32G070CBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="InputDevice.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: InputDevice.elf
+ 
+arm-none-eabi-size   InputDevice.elf 
+arm-none-eabi-objdump -h -S  InputDevice.elf  > "InputDevice.list"
+   text	   data	    bss	    dec	    hex	filename
+  18284	     20	   1916	  20220	   4efc	InputDevice.elf
+Finished building: default.size.stdout
+ 
+Finished building: InputDevice.list
+ 
+
+17:57:35 Build Finished. 0 errors, 3 warnings. (took 1s.811ms)
+
