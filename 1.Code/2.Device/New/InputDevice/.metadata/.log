@@ -1,0 +1,18 @@
+!SESSION 2023-07-03 14:57:05.410 -----------------------------------------------
+eclipse.buildId=Version 1.12.1
+java.version=11.0.17
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2023-07-03 14:59:27.808
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2023-07-03 14:59:27.820
+!MESSAGE Log4j2 initialized with config file C:\Users\Huy Le\Desktop\Dang\USM\1.Code\2.Device\InputDevice\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2023-07-03 14:59:33.488
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY org.eclipse.cdt.core 1 0 2023-07-03 15:02:13.391
+!MESSAGE Indexed 'InputDevice' (24 sources, 87 headers) in 9.17 sec: 6,334 declarations; 43,503 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.004%)
