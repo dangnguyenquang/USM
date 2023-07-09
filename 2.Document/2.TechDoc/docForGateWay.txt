@@ -1,0 +1,19 @@
+res:
+05 05 01 AA
+
+05 05: address (03 03, 04 04)
+01: channel
+
+req:
+05 05 01 00 00 00 00 00 01 01 00 0F 00 01 00 00 13
+
+05 05: address (03 03, 04 04)
+01: islamp (có bo lamp hay không)
+00 00: red (dừng)
+00 00: yellow (nghỉ)
+00 01: green (chạy)
+01: iscount (có bo đếm hay không)
+00 0F: số lượng sản phẩm (hex) (max: 65535)
+00 01: nút start/stop
+00 00: bỏ
+13: sum

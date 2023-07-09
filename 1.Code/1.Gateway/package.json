@@ -1,5 +1,7 @@
 {
   "dependencies": {
-    "kafkajs": "^2.2.4"
+    "@serialport/parser-readline": "^11.0.0",
+    "kafkajs": "^2.2.4",
+    "serialport": "^11.0.0"
   }
 }
