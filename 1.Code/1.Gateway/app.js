@@ -7,9 +7,9 @@ const topicAlive = 'mes_AliveIOTRequest';
 const topicBegin = 'mes_StartIOTRequest';
 const topicStop = 'mes_StopIOTRequest';
 
-const portName = 'COM3';
+const portName = 'COM5';
 let intervalMillisecond = 60000;
-let expectedDataCount = 16;
+let expectedDataCount = 17;
 let lastMilliseconds = new Date().getTime();
 let receivedData = [];
 
@@ -96,7 +96,7 @@ function sendAndReceiveData(i) {
 
     if (receivedData.length === expectedDataCount) {
       currentDevice.alive = true;
-      const combinedValue = (receivedData[9] << 8) | receivedData[10];
+      const combinedValue = (receivedData[10] << 8) | receivedData[11];
       let machineCode = receivedData[0].toString(16) + receivedData[1].toString(16);
       let currentMillisecond = new Date().getTime();
 
@@ -108,9 +108,9 @@ function sendAndReceiveData(i) {
 
       currentDevice.preIndexs = combinedValue;
 
-      if (receivedData[12].toString(16) != currentDevice.lastedBtn) {
-        currentDevice.lastedBtn = receivedData[12].toString(16);
-        if (receivedData[12].toString(16) == '1') {
+      if (receivedData[13].toString(16) != currentDevice.lastedBtn) {
+        currentDevice.lastedBtn = receivedData[13].toString(16);
+        if (receivedData[13].toString(16) == '1') {
           currentDevice.indexs = 0;
           currentDevice.preIndexs = combinedValue;
           jsonDataBegin = {
@@ -126,7 +126,7 @@ function sendAndReceiveData(i) {
             .catch((error) => {
               console.error('Error producing message:', error);
             });
-        } else if (receivedData[12].toString(16) == '0') {
+        } else if (receivedData[13].toString(16) == '0') {
           jsonDataStop = {
             "machineCode": machineCode,
             "currentMillisecond": currentMillisecond,
