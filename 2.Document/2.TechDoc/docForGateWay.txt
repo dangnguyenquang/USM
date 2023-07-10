@@ -17,3 +17,7 @@ req:
 00 01: nút start/stop
 00 00: bỏ
 13: sum
+
+Lưu ý khi lắp đặt:
+1. Chọn loại GW không cần bật nguồn
+2. Tắt các chế độ sleep
