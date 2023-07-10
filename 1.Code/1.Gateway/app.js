@@ -8,14 +8,14 @@ const topicBegin = 'mes_StartIOTRequest';
 const topicStop = 'mes_StopIOTRequest';
 
 const portName = 'COM3';
-const hexArray = ['0x03', '0x03', '0x01', '0xAA']; // sẽ thay đổi
+let expectedDataCount = 17;
 
 let preIndexs = 0;
+const hexArray = ['0x05', '0x05', '0x01', '0xAA']; // sẽ thay đổi
 let indexs = 0;
 let lastedBtn = '0';
 let status;
 let receivedData = []; 
-let expectedDataCount = 16;
 let intervalMillisecond = 60000;
 let lastMilliseconds = new Date().getTime();
 
@@ -64,7 +64,7 @@ port.on('open', () => {
     receivedData = receivedData.concat([...data]); // Gộp dữ liệu vào mảng receivedData
     
     if (receivedData.length === expectedDataCount) {
-      const combinedValue = (receivedData[9] << 8) | receivedData[10]; 
+      const combinedValue = (receivedData[10] << 8) | receivedData[11]; 
       let machineCode = receivedData[0].toString(16) + receivedData[1].toString(16);
       let currentMillisecond = new Date().getTime();
 
@@ -76,9 +76,9 @@ port.on('open', () => {
       
       preIndexs = combinedValue;
       
-      if (receivedData[12].toString(16) != lastedBtn){
-        lastedBtn = receivedData[12].toString(16);
-        if (receivedData[12].toString(16) == '1'){
+      if (receivedData[13].toString(16) != lastedBtn){
+        lastedBtn = receivedData[13].toString(16);
+        if (receivedData[13].toString(16) == '1'){
           indexs = 0;
           preIndexs = combinedValue;
           jsonDataBegin = {
@@ -94,7 +94,7 @@ port.on('open', () => {
           .catch((error) => {
             console.error('Error producing message:', error);
           });
-        } else if (receivedData[12].toString(16) == '0'){
+        } else if (receivedData[13].toString(16) == '0'){
           jsonDataStop = {
             "machineCode": machineCode,     
             "currentMillisecond": currentMillisecond,     
