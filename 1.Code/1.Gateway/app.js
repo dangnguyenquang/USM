@@ -35,7 +35,7 @@ let device = [
     alive: false
   },
   {
-    hexArray: [0x04, 0x04, 0x01, 0xAA],
+    hexArray: [0x05, 0x05, 0x01, 0xAA],
     preIndexs: 0,
     indexs: 0,
     lastedBtn: '0',
@@ -87,7 +87,7 @@ function sendAndReceiveData(i) {
   }
 
   console.log('Thiết bị thứ: ', i);
-  const currentDevice = device[i]; // Lấy đối tượng hiện tại từ mảng device
+  const currentDevice = device[i]; // Lấy đối tượng hiện tại từ mảng device (khi thay đổi giá trị currentDevice thì device tương ứng trong mảng cũng sẽ thay đổi)
   const arraySend = currentDevice.hexArray;
   port.write(Buffer.from(arraySend));
 
