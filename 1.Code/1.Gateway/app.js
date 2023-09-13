@@ -1,6 +1,6 @@
 const { SerialPort } = require('serialport')
 const { Kafka, Partitioners } = require('kafkajs');
-const kafkaServer = ' 194.233.92.193: 9092';
+const kafkaServer = '194.233.92.193:9092';
 
 const topic = 'usm_IOTRequest';
 
