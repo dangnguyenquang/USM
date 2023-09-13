@@ -2,10 +2,7 @@ const { SerialPort } = require('serialport')
 const { Kafka, Partitioners } = require('kafkajs');
 const kafkaServer = '173.249.14.91:29092';
 
-const topicCount = 'mes_CounterIOTRequest';
-const topicAlive = 'mes_AliveIOTRequest';
-const topicBegin = 'mes_StartIOTRequest';
-const topicStop = 'mes_StopIOTRequest';
+const topic = 'usm_IOTRequest';
 
 const portName = 'COM5';
 let intervalMillisecond = 60000;
@@ -114,12 +111,13 @@ function sendAndReceiveData(i) {
           currentDevice.indexs = 0;
           currentDevice.preIndexs = combinedValue;
           jsonDataBegin = {
+            "type": 1,
             "machineCode": machineCode,
             "currentMillisecond": currentMillisecond,
             "intervalMillisecond": intervalMillisecond,
           }
 
-          produceMessage(topicBegin, jsonDataBegin)
+          produceMessage(topic, jsonDataBegin)
             .then(() => {
               console.log('Message begin successfully.');
             })
@@ -128,12 +126,13 @@ function sendAndReceiveData(i) {
             });
         } else if (receivedData[13].toString(16) == '0') {
           jsonDataStop = {
+            "type": 2,
             "machineCode": machineCode,
             "currentMillisecond": currentMillisecond,
             "lastMillisecond": lastMilliseconds,
             "lastIndex": currentDevice.indexs,
           }
-          produceMessage(topicStop, jsonDataStop)
+          produceMessage(topic, jsonDataStop)
             .then(() => {
               console.log('Message stop successfully.');
             })
@@ -153,6 +152,7 @@ function sendAndReceiveData(i) {
 
       console.log('Số lượng sản phẩm ghi nhận được: ', currentDevice.indexs);
       currentDevice.jsonDataCount = {
+        "type": 3,
         "machineCode": machineCode,
         "currentMillisecond": currentMillisecond,
         "lastMillisecond": lastMilliseconds,
@@ -160,6 +160,7 @@ function sendAndReceiveData(i) {
       }
 
       currentDevice.jsonDataAlive = {
+        "type": 4,
         "machineCode": machineCode,
         "currentMillisecond": currentMillisecond,
         "status": currentDevice.status,
@@ -183,14 +184,14 @@ setInterval(() => {
   for (let k = 0; k < device.length; k++) {
     if (device[k].alive == true) {
       device[k].alive = false;
-      produceMessage(topicCount, device[k].jsonDataCount)
+      produceMessage(topic, device[k].jsonDataCount)
         .then(() => {
           console.log('Message count successfully.');
         })
         .catch((error) => {
           console.error('Error producing message:', error);
         });
-      produceMessage(topicAlive, device[k].jsonDataAlive)
+      produceMessage(topic, device[k].jsonDataAlive)
         .then(() => {
           console.log('Message alive successfully.');
         })
