@@ -19,6 +19,7 @@ let device = [
     status: 0,
     jsonDataAlive: {},
     jsonDataCount: {},
+    setpreIndexs: true,
     alive: false
   },
   {
@@ -29,6 +30,7 @@ let device = [
     status: 0,
     jsonDataAlive: {},
     jsonDataCount: {},
+    setpreIndexs: true,
     alive: false
   },
   {
@@ -39,6 +41,7 @@ let device = [
     status: 0,
     jsonDataAlive: {},
     jsonDataCount: {},
+    setpreIndexs: true,
     alive: false
   },
 ];
@@ -94,6 +97,10 @@ function sendAndReceiveData(i) {
     if (receivedData.length === expectedDataCount) {
       currentDevice.alive = true;
       const combinedValue = (receivedData[10] << 8) | receivedData[11];
+      if (currentDevice.setpreIndexs == true) {
+        currentDevice.preIndexs = combinedValue;
+        currentDevice.setpreIndexs = false;
+      }
       let machineCode = receivedData[0].toString(16) + receivedData[1].toString(16);
       let currentMillisecond = new Date().getTime();
 
@@ -102,9 +109,11 @@ function sendAndReceiveData(i) {
       } else {
         currentDevice.indexs += combinedValue - currentDevice.preIndexs;
       }
-
+      
       currentDevice.preIndexs = combinedValue;
-
+      
+      console.log('Số lượng sản phẩm ghi nhận được: ', currentDevice.indexs);
+      
       if (receivedData[13].toString(16) != currentDevice.lastedBtn) {
         currentDevice.lastedBtn = receivedData[13].toString(16);
         if (receivedData[13].toString(16) == '1') {
@@ -150,7 +159,6 @@ function sendAndReceiveData(i) {
         currentDevice.status = 2;
       }
 
-      console.log('Số lượng sản phẩm ghi nhận được: ', currentDevice.indexs);
       currentDevice.jsonDataCount = {
         "type": 3,
         "machineCode": machineCode,
