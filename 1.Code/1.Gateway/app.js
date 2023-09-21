@@ -192,7 +192,7 @@ setInterval(() => {
   for (let k = 0; k < device.length; k++) {
     if (device[k].alive == true) {
       device[k].alive = false;
-      if (device[k].jsonDataCount === NULL) console.log('JSON DATA COUNT NULL');
+      if (typeof device[k].jsonDataAlive === 'object') console.log('JSON DATA COUNT NULL');
       produceMessage(topic, device[k].jsonDataCount)
         .then(() => {
           console.log(`Message ${jsonDataCount.machineCode} count successfully`);
