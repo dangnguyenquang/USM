@@ -101,7 +101,7 @@ function sendAndReceiveData(i) {
         currentDevice.preIndexs = combinedValue;
         currentDevice.setpreIndexs = false;
       }
-      let machineCode = receivedData[0].toString(16) + receivedData[1].toString(16);
+      let machineCode = receivedData[0].toString(16).padStart(2, '0') + receivedData[1].toString(16).padStart(2, '0');
       let currentMillisecond = new Date().getTime();
 
       if (combinedValue < currentDevice.preIndexs) {
@@ -112,7 +112,7 @@ function sendAndReceiveData(i) {
       
       currentDevice.preIndexs = combinedValue;
       
-      console.log('Số lượng sản phẩm ghi nhận được: ', currentDevice.indexs);
+      console.log(`Số lượng sản phẩm máy ${machineCode} thu được là: ${currentDevice.indexs}`);
       
       if (receivedData[13].toString(16) != currentDevice.lastedBtn) {
         currentDevice.lastedBtn = receivedData[13].toString(16);
@@ -128,7 +128,7 @@ function sendAndReceiveData(i) {
 
           produceMessage(topic, jsonDataBegin)
             .then(() => {
-              console.log('Message begin successfully.');
+              console.log(`Message ${jsonDataBegin.machineCode} begin successfully`);
             })
             .catch((error) => {
               console.error('Error producing message:', error);
@@ -143,7 +143,7 @@ function sendAndReceiveData(i) {
           }
           produceMessage(topic, jsonDataStop)
             .then(() => {
-              console.log('Message stop successfully.');
+              console.log(`Message ${jsonDataStop.machineCode} stop successfully`);
             })
             .catch((error) => {
               console.error('Error producing message:', error);
@@ -194,14 +194,14 @@ setInterval(() => {
       device[k].alive = false;
       produceMessage(topic, device[k].jsonDataCount)
         .then(() => {
-          console.log('Message count successfully.');
+          console.log(`Message ${jsonDataCount.machineCode} count successfully`);
         })
         .catch((error) => {
           console.error('Error producing message:', error);
         });
       produceMessage(topic, device[k].jsonDataAlive)
         .then(() => {
-          console.log('Message alive successfully.');
+          console.log(`Message ${jsonDataAlive.machineCode} alive successfully`);
         })
         .catch((error) => {
           console.error('Error producing message:', error);
