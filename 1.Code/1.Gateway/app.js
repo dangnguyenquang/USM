@@ -192,17 +192,16 @@ setInterval(() => {
   for (let k = 0; k < device.length; k++) {
     if (device[k].alive == true) {
       device[k].alive = false;
-      if (typeof device[k].jsonDataAlive === 'object') console.log('JSON DATA COUNT NULL');
       produceMessage(topic, device[k].jsonDataCount)
         .then(() => {
-          console.log(`Message ${jsonDataCount.machineCode} count successfully`);
+          console.log(`Message ${device[k].jsonDataCount.machineCode} count successfully`);
         })
         .catch((error) => {
           console.error('Error producing message:', error);
         });
       produceMessage(topic, device[k].jsonDataAlive)
         .then(() => {
-          console.log(`Message ${jsonDataAlive.machineCode} alive successfully`);
+          console.log(`Message ${device[k].jsonDataAlive.machineCode} alive successfully`);
         })
         .catch((error) => {
           console.error('Error producing message:', error);
