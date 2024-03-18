@@ -1,8 +1,8 @@
 const { SerialPort } = require('serialport')
 const { Kafka, Partitioners } = require('kafkajs');
-const kafkaServer = '194.233.92.193:9092';
+const kafkaServer = '125.212.248.109:9092';
 
-const topic = 'usm_IOTRequest';
+const topic = 'prod_IOTRequest';
 
 const portName = 'COM5';
 let intervalMillisecond = 60000;
